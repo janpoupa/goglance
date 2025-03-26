@@ -8,6 +8,17 @@ interface Props {
 
 const { line_name, last_stop_name, leaving_in_min } = Astro.props;
 
+function getNmbColor(line_name: string) { // Function now correctly takes a string
+    const num = parseInt(line_name, 10);
+
+    if (num >= 1 && num <= 8) {
+      return '#101014';
+    } else {
+      return 'white';
+    }
+  }
+  const nmbColor = getNmbColor(line_name);
+
 function getLineColor(line_name: string) { // Function now correctly takes a string
     const num = parseInt(line_name, 10);
 
@@ -53,7 +64,7 @@ function getLineColor(line_name: string) { // Function now correctly takes a str
 
 <div class="bus-card">
   <div class="info">
-    <span class="line" style={`background-color: ${lineColor};`}><p class="nmb">{line_name}</p></span>
+    <span class="line" style={`background-color: ${lineColor};`}><p class="nmb" style={`color: ${nmbColor};`}>{line_name}</p></span>
     <p class="destination">{last_stop_name}</p>
     <p class="time">{leaving_in_min} min</p>
   </div>
