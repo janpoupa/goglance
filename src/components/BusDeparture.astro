@@ -7,6 +7,21 @@ interface Props {
 }
 
 const { line_name, last_stop_name, leaving_in_min } = Astro.props;
+
+function getLineColor(line_name: string) { // Function now correctly takes a string
+    const num = parseInt(line_name, 10);
+
+    if (num >= 1 && num <= 8) {
+      return 'rgb(240 190 50)';
+    } else if (num >= 9 && num <= 19) {
+      return 'rgb(30 150 65)';
+    } else if (num >= 20) {
+      return 'rgb(205 40 55)';
+    } else {
+      return 'gray';
+    }
+  }
+  const lineColor = getLineColor(line_name);
 ---
 
 <script>
@@ -30,15 +45,15 @@ const { line_name, last_stop_name, leaving_in_min } = Astro.props;
       fontSize = '0.8rem'; // Smallest size for very long text
       lineHeight = '0.8rem';
     }
-
     element.style.fontSize = fontSize;
     element.style.lineHeight = lineHeight;
   });
+
 </script>
 
 <div class="bus-card">
   <div class="info">
-    <span class="line"><p class="nmb">{line_name}</p></span>
+    <span class="line" style={`background-color: ${lineColor};`}><p class="nmb">{line_name}</p></span>
     <p class="destination">{last_stop_name}</p>
     <p class="time">{leaving_in_min} min</p>
   </div>
@@ -59,20 +74,20 @@ const { line_name, last_stop_name, leaving_in_min } = Astro.props;
   .line {
     font-size: 1.5rem;
     font-weight: bold;
-      background-color: #cd2837;
-      border-radius: 0.2rem;
-      aspect-ratio: 2 / 1;
-      width: 6rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      clip-path: polygon(0 0, 75% 0, 100% 50%, 75% 100%, 0% 100%);
+    background-color: ;
+    border-radius: 0.2rem;
+    aspect-ratio: 2 / 1;
+    width: 6rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    clip-path: polygon(0 0, 75% 0, 100% 50%, 75% 100%, 0% 100%);
   }
 
   .nmb{
     line-height: 0;
-    transform: translate(-30%, -50%);
+    transform: translate(-25%, -50%);
   }
 
   .info {
@@ -85,7 +100,6 @@ const { line_name, last_stop_name, leaving_in_min } = Astro.props;
 
   }
   .destination{
-      /* margin-right; */
       margin-top: 0.5rem;
       margin-left: 0;
       margin-right: 0;
@@ -98,6 +112,5 @@ const { line_name, last_stop_name, leaving_in_min } = Astro.props;
     color: white;
     margin-bottom: 0;
     margin-top: 0;
-
   }
 </style>

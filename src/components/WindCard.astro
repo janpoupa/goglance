@@ -1,11 +1,15 @@
 ---
+interface Props{
+    weatherData: any
+}
+const {weatherData} = Astro.props
 ---
-<div class="wind-card">
-    <p style="color: #A7A7A7;">Vývoj větru</p>
-    <div class="chart-placeholder">
-    </div>
-    <p>7.50 km/h</p>
 
+<div class="wind-card">
+    <p style="color: #A7A7A7">Vývoj větru</p>
+    <div class="WindChart">
+    <div>
+    <p>{weatherData.windSpeed} km/h</p>
 </div>
 
 <style>
@@ -16,10 +20,8 @@
         border-radius: 1.5rem;
         font-size: 1.3rem;
     }
-    .chart-placeholder{
-        /* Style your chart placeholder here */
-        height: 50px; /* Example height */
-        background-color: #eee; /* Light gray background */
-        margin-bottom: 0.5rem;
+    .WindChart{
+        height: 10rem;
+        margin-bottom: 0;
     }
 </style>

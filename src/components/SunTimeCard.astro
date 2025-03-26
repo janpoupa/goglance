@@ -1,18 +1,26 @@
 ---
+interface Props{
+    weatherData: any
+}
+const {weatherData} = Astro.props
 ---
+
 <div class="sun-time-card">
     <p style="color: #A7A7A7;">Východ a západ</p>
     <div class="sun-times">
         <img src="src/assets/sunrise.png" class="sun-icon">
-        <p>Sunrise</p>
-        <p>6:32 AM</p>
+        <p style="color: #A7A7A7;">Sunrise</p>
+        <div style="text-align: center;"><p class="sun-text" style="font-size: 1.8rem">{weatherData.sunriseTime}</p><p class="sun-text" style="font-size: 1rem; color: #A7A7A7;">-1m 50s</p></div>
         <img src="src/assets/sunset.png" class="sun-icon">
-        <p>Sunset</p>
-        <p>5:42 PM</p>
+        <p style="color: #A7A7A7;">Sunset</p>
+        <div style="text-align: center;"><p class="sun-text" style="font-size: 1.8rem">{weatherData.sunsetTime}</p><p class="sun-text" style="font-size: 1rem; color: #A7A7A7;">+2m 10s</p></div>
     </div>
 </div>
 
 <style>
+    .sun-text{
+        margin: 0;
+    }
     .sun-time-card{
         background-color: #1b1a1d;
         padding: 0 2rem 0 2rem;
@@ -22,7 +30,11 @@
     }
     .sun-times {
         display: grid;
-        grid-template-columns: 1fr 3fr 2fr;
+        row-gap: 2rem;
+        grid-template-columns: 1fr 1.5fr 1.5fr;
+        align-self: center;
+        transform: translate(0%, 6%);
+        justify-items: center;
         align-items: center;
     }
     .sun-icon {

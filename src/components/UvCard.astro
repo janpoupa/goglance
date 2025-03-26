@@ -1,10 +1,19 @@
 ---
+interface Props{
+    weatherData: any
+}
+const {weatherData} = Astro.props
 ---
+
+<script>
+
+</script>
+
 <div class="uv-card">
-    <p style="color: #A7A7A7;">UV Index</p>
-    <div class="gauge-placeholder">
+    <p style="color: #A7A7A7">UV Index</p>
+    <div class="UVChart" id="UVchart">
     </div>
-    <p>5.50 UV</p>
+    <p>{weatherData.UVindex} UV</p>
 </div>
 
 <style>
@@ -15,10 +24,9 @@
         border-radius: 1.5rem;
         font-size: 1.3rem;
     }
-    .gauge-placeholder{
-        height: 50px; /* Example height */
-        background-color: #eee; /* Light gray background */
-        margin-bottom: 0.5rem;
+    .UVChart{
+        margin-bottom: 0;
+        height: 10rem;
     }
 
 </style>
