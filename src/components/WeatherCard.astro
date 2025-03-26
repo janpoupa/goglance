@@ -1,0 +1,27 @@
+---
+interface Props{
+    weatherData: any
+}
+const {weatherData} = Astro.props
+---
+<hr style="border: 0.15rem solid #1b1a1d; border-radius: 5px;">
+<div class="weather-card">
+    <div class="extra-info">
+        <p style="color: #A7A7A7;">Vlhkost <p>{weatherData.humidity}</p></p>
+        <p style="color: #A7A7A7;">Pocitová teplota <p>{weatherData.feelsLike}</p></p>
+    </div>
+</div>
+
+<style>
+    .weather-card{
+        background-color: #1b1a1d;
+        padding: 0 2rem 0 2rem;
+        margin-top: 4rem;
+        border-radius: 1.5rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.7rem;
+    }
+</style>

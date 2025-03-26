@@ -1,0 +1,135 @@
+---
+// src/pages/index.astro
+import Layout from '../layouts/Layout.astro';
+import BusDeparture from '../components/BusDeparture.astro';
+import WeatherCard from '../components/WeatherCard.astro';
+import WindCard from '../components/WindCard.astro';
+import UvCard from '../components/UvCard.astro';
+import SunTimeCard from '../components/SunTimeCard.astro';
+
+
+// Mock Data (Replace with API calls later)
+const departures = [{"line_name":"58","last_stop_name":"Okounová","leaving_in_min":3},{"line_name":"1","last_stop_name":"Slovany","leaving_in_min":6},{"line_name":"1","last_stop_name":"Slovany","leaving_in_min":14},{"line_name":"58","last_stop_name":"Nádraží Bílá Hora","leaving_in_min":17},{"line_name":"1","last_stop_name":"Slovany","leaving_in_min":21}];
+const weatherData = {
+        location: 'Plzeň, Česká republika',
+        date: 'Středa 12. 3. 2025',
+        temperature: '14°C',
+        condition: 'Mírně zataženo',
+        humidity: '84%',
+        dewPoint: '27°',
+        feelsLike: '42°',
+}
+
+---
+
+<Layout title="DoorHub">
+  <main class="dashboard">
+		<div class="first">
+    		<h1 style="margin-bottom: 0px;">Západočeská univerzita</h1>
+    		<h2 style="color: #A7A7A7; font-weight: 400; margin-bottom: 5rem; margin-top: 1rem;">{weatherData.location}</h2>
+			<div class="main-info">
+				<img src="src/assets/sun-rain.png" class="weather-icon">
+				<div class="temp-and-icon">
+					<span class="temperature">{weatherData.temperature}</span>
+					<span class="condition">{weatherData.condition}</span>
+				</div>
+			</div>
+		</div>
+		<div class="vl">
+		</div>
+		<div class="departure">
+        	<h1 style="margin-bottom: 0px;">{weatherData.date}</h1>
+        	<h2 style="color: #A7A7A7; font-weight: 400; margin-bottom: 2.5rem; margin-top: 1rem;">Nejbližší odjezdy ze zastávky <b style="color: white;">Univerzita</h2>
+			<section class="bus-departures">
+				{departures.map((departure) => (
+				  <BusDeparture line_name={departure.line_name} last_stop_name={departure.last_stop_name} leaving_in_min={departure.leaving_in_min} />
+				))}
+			</section>
+		</div>
+		<div class="third">
+			<WeatherCard weatherData={weatherData}/>
+		</div>
+		<div class="fourth">
+			<h1 style="margin-bottom: 1rem; margin-top: 0.5rem;">Dnešní předpověď</h1>
+			<section class="weather-section">
+				<div class="lower-cards">
+					<WindCard />
+					<UvCard />
+					<SunTimeCard />
+				</div>
+			</section>
+		</div>
+  </main>
+</Layout>
+
+<style>
+  .dashboard {
+    display: grid;
+    grid-template-columns: 1fr 0.001fr 2fr; /* Initially, one column */
+	column-gap: 4rem;
+    row-gap: 0.5rem; /* Spacing between elements */
+    width: 92%;        /* Take up most of the viewport width */
+	overflow: hidden;
+  }
+  .vl {
+  border: 0.2rem solid #1b1a1d;
+  border-radius: 5px;;
+  height: 130%;
+  grid-column: 2;
+  grid-row-start: 1;
+  grid-row-end: 3;
+  overflow: hidden;
+}
+  .temp-and-icon{
+        display: block;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .condition{
+        font-size: 1.5rem;
+        margin: 0;
+		color: #A7A7A7;
+		margin-left: 6rem;
+    }
+    .temperature{
+        font-size: 5rem;
+		font-weight: 600;
+		margin: 0;
+    }
+	.weather-icon{
+		max-width: 10rem;
+	}
+    .lower-cards{
+        display: flex;
+        gap: 1rem;
+        justify-content: space-between;
+        width: 100%;
+    }
+    .dashboard-header{
+        display: flex;
+        flex-direction: column;
+    }
+
+  .bus-departures {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); /* Responsive columns */
+    gap: 1rem;
+  }
+
+  .weather-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+  }
+
+
+    @media (min-width: 768px) {
+        .dashboard{
+            grid-template-columns: 1fr 0.0001fr 2fr;
+        }
+        .dashboard-header{
+            grid-column: 1 / -1;
+        }
+    }
+
+</style>

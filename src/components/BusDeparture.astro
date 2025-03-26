@@ -1,0 +1,103 @@
+---
+// src/components/BusDeparture.astro
+interface Props {
+  line_name: string;
+  last_stop_name: string;
+  leaving_in_min: string;
+}
+
+const { line_name, last_stop_name, leaving_in_min } = Astro.props;
+---
+
+<script>
+  const elements = document.querySelectorAll(`.destination`);
+  elements.forEach(element => {
+    const textLength = element.textContent.trim().length;
+    let fontSize;
+    let lineHeight;
+
+    // Adjust these thresholds and font sizes as needed for your design.
+    if (textLength <= 10) {
+      fontSize = '1.25rem'; // Larger size for short text
+      lineHeight = '1.25rem';
+    } else if (textLength <= 20) {
+      fontSize = '1rem'; // Medium size
+      lineHeight = '1rem';
+    } else if (textLength <= 25) {
+      fontSize = '0.9rem'; //Smaller font
+      lineHeight = '0.9rem';
+    } else {
+      fontSize = '0.8rem'; // Smallest size for very long text
+      lineHeight = '0.8rem';
+    }
+
+    element.style.fontSize = fontSize;
+    element.style.lineHeight = lineHeight;
+  });
+</script>
+
+<div class="bus-card">
+  <div class="info">
+    <span class="line"><p class="nmb">{line_name}</p></span>
+    <p class="destination">{last_stop_name}</p>
+    <p class="time">{leaving_in_min} min</p>
+  </div>
+</div>
+
+<style>
+  .bus-card {
+    background-color: #1b1a1d;
+    border-radius: 1rem;
+    margin: 0.4rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex; /* Use flexbox for layout */
+    align-items: space-between; /* Vertically center content */
+    justify-content: center;
+    font-weight: 600;
+  }
+
+  .line {
+    font-size: 1.5rem;
+    font-weight: bold;
+      background-color: #cd2837;
+      border-radius: 0.2rem;
+      aspect-ratio: 2 / 1;
+      width: 6rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      clip-path: polygon(0 0, 75% 0, 100% 50%, 75% 100%, 0% 100%);
+  }
+
+  .nmb{
+    line-height: 0;
+    transform: translate(-30%, -50%);
+  }
+
+  .info {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: space-between;
+      margin-top: 3rem;
+      margin-bottom: 2.5rem;
+
+  }
+  .destination{
+      /* margin-right; */
+      margin-top: 0.5rem;
+      margin-left: 0;
+      margin-right: 0;
+      line-height: 1.25rem;
+      max-width: 6rem;
+  }
+
+  .time {
+    font-size: 2rem;
+    color: white;
+    margin-bottom: 0;
+    margin-top: 0;
+
+  }
+</style>

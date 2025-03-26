@@ -1,0 +1,32 @@
+---
+---
+<div class="sun-time-card">
+    <p style="color: #A7A7A7;">Východ a západ</p>
+    <div class="sun-times">
+        <img src="src/assets/sunrise.png" class="sun-icon">
+        <p>Sunrise</p>
+        <p>6:32 AM</p>
+        <img src="src/assets/sunset.png" class="sun-icon">
+        <p>Sunset</p>
+        <p>5:42 PM</p>
+    </div>
+</div>
+
+<style>
+    .sun-time-card{
+        background-color: #1b1a1d;
+        padding: 0 2rem 0 2rem;
+        margin-top: 0rem;
+        border-radius: 1.5rem;
+        font-size: 1.3rem;
+    }
+    .sun-times {
+        display: grid;
+        grid-template-columns: 1fr 3fr 2fr;
+        align-items: center;
+    }
+    .sun-icon {
+        width: 2.5rem;
+        padding: 1rem;
+    }
+</style>
