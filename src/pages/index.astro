@@ -6,6 +6,9 @@ import WeatherCard from '../components/WeatherCard.astro';
 import WindCard from '../components/WindCard.astro';
 import UvCard from '../components/UvCard.astro';
 import SunTimeCard from '../components/SunTimeCard.astro';
+import {Image} from 'astro:assets';
+import sunrain from '../assets/sun-rain.png';
+import suncloud from '../assets/sun-cloud.png';
 
 
 // Mock Data (Replace with API calls later)
@@ -32,7 +35,7 @@ const weatherData = {
     		<h1 style="margin-bottom: 0px;">Západočeská univerzita</h1>
     		<h2 style="color: #A7A7A7; font-weight: 400; margin-bottom: 5vw; margin-top: 1vw;">{weatherData.location}</h2>
 			<div class="main-info">
-				<img src="public/sun-rain.png" class="weather-icon">
+        <Image src= {sunrain} class="weather-icon" alt="weather icon"></Image>
 				<div class="temp-and-icon">
 					<span class="temperature">{weatherData.temperature}</span>
 					<span class="condition">{weatherData.condition}</span>
@@ -110,6 +113,7 @@ const weatherData = {
     }
 	.weather-icon{
 		max-width: 10vw;
+    height: auto;
 	}
     .lower-cards{
         display: flex;
