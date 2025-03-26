@@ -9,28 +9,31 @@ const {weatherData} = Astro.props
     <p style="color: #A7A7A7;">Východ a západ</p>
     <div class="sun-times">
         <img src="src/assets/sunrise.png" class="sun-icon">
-        <p style="color: #A7A7A7;">Sunrise</p>
-        <div style="text-align: center;"><p class="sun-text" style="font-size: 1.8rem">{weatherData.sunriseTime}</p><p class="sun-text" style="font-size: 1rem; color: #A7A7A7;">-1m 50s</p></div>
+        <p class="sunpositiontext" style="color: #A7A7A7;">Sunrise</p>
+        <div style="text-align: center;"><p class="sun-text" style="font-size: 1.8vw">{weatherData.sunriseTime}</p><p class="sun-text" style="font-size: 1vw; color: #A7A7A7;">-1m 50s</p></div>
         <img src="src/assets/sunset.png" class="sun-icon">
-        <p style="color: #A7A7A7;">Sunset</p>
-        <div style="text-align: center;"><p class="sun-text" style="font-size: 1.8rem">{weatherData.sunsetTime}</p><p class="sun-text" style="font-size: 1rem; color: #A7A7A7;">+2m 10s</p></div>
+        <p class="sunpositiontext" style="color: #A7A7A7;">Sunset</p>
+        <div style="text-align: center;"><p class="sun-text" style="font-size: 1.8vw">{weatherData.sunsetTime}</p><p class="sun-text" style="font-size: 1vw; color: #A7A7A7;">+2m 10s</p></div>
     </div>
 </div>
 
 <style>
+    .sunpositiontext {
+        font-size: 1.5vw;
+    }
     .sun-text{
         margin: 0;
     }
     .sun-time-card{
         background-color: #1b1a1d;
-        padding: 0 2rem 0 2rem;
-        margin-top: 0rem;
-        border-radius: 1.5rem;
-        font-size: 1.3rem;
+        padding: 0 2vw 0 2vw;
+        margin-top: 0vw;
+        border-radius: 1.5vw;
+        font-size: 1.3vw;
     }
     .sun-times {
         display: grid;
-        row-gap: 2rem;
+        row-gap: 2vw;
         grid-template-columns: 1fr 1.5fr 1.5fr;
         align-self: center;
         transform: translate(0%, 6%);
@@ -38,7 +41,7 @@ const {weatherData} = Astro.props
         align-items: center;
     }
     .sun-icon {
-        width: 2.5rem;
-        padding: 1rem;
+        width: 2.5vw;
+        padding: 1vw;
     }
 </style>

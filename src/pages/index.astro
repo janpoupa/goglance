@@ -30,7 +30,7 @@ const weatherData = {
   <main class="dashboard">
 		<div class="first">
     		<h1 style="margin-bottom: 0px;">Západočeská univerzita</h1>
-    		<h2 style="color: #A7A7A7; font-weight: 400; margin-bottom: 5rem; margin-top: 1rem;">{weatherData.location}</h2>
+    		<h2 style="color: #A7A7A7; font-weight: 400; margin-bottom: 5vw; margin-top: 1vw;">{weatherData.location}</h2>
 			<div class="main-info">
 				<img src="src/assets/sun-rain.png" class="weather-icon">
 				<div class="temp-and-icon">
@@ -43,7 +43,7 @@ const weatherData = {
 		</div>
 		<div class="departure">
         	<h1 style="margin-bottom: 0px;">{weatherData.date}</h1>
-        	<h2 style="color: #A7A7A7; font-weight: 400; margin-bottom: 2.5rem; margin-top: 1rem;">Nejbližší odjezdy ze zastávky <b style="color: white;">Univerzita</h2>
+        	<h2 style="color: #A7A7A7; font-weight: 400; margin-bottom: 2.5vw; margin-top: 1vw;">Nejbližší odjezdy ze zastávky <b style="color: white;">Univerzita</h2>
 			<section class="bus-departures">
 				{departures.map((departure) => (
 				  <BusDeparture line_name={departure.line_name} last_stop_name={departure.last_stop_name} leaving_in_min={departure.leaving_in_min} />
@@ -54,7 +54,7 @@ const weatherData = {
 			<WeatherCard weatherData={weatherData}/>
 		</div>
 		<div class="fourth">
-			<h1 style="margin-bottom: 1rem; margin-top: 0.5rem;">Dnešní předpověď</h1>
+			<h1 style="margin-bottom: 1vw; margin-top: 0.5vw;">Dnešní předpověď</h1>
 			<section class="weather-section">
 				<div class="lower-cards">
 					<WindCard weatherData={weatherData}/>
@@ -67,16 +67,22 @@ const weatherData = {
 </Layout>
 
 <style>
+  h1 {
+    font-size: 2vw;
+  }
+  h2 {
+    font-size: 1.5vw;
+  }
   .dashboard {
     display: grid;
     grid-template-columns: 1fr 0.001fr 2fr; /* Initially, one column */
-	column-gap: 4rem;
-    row-gap: 0.5rem; /* Spacing between elements */
+	  column-gap: 4vw;
+    row-gap: 0.5vw; /* Spacing between elements */
     width: 92%;        /* Take up most of the viewport width */
 	overflow: hidden;
   }
   .vl {
-  border: 0.2rem solid #1b1a1d;
+  border: 0.2vw solid #1b1a1d;
   border-radius: 5px;;
   height: 130%;
   grid-column: 2;
@@ -87,25 +93,25 @@ const weatherData = {
   .temp-and-icon{
         display: block;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.5vw;
     }
     .condition{
-        font-size: 1.5rem;
+        font-size: 1.5vw;
         margin: 0;
 		color: #A7A7A7;
-		margin-left: 6rem;
+		margin-left: 6vw;
     }
     .temperature{
-        font-size: 5rem;
+        font-size: 5vw;
 		font-weight: 600;
 		margin: 0;
     }
 	.weather-icon{
-		max-width: 10rem;
+		max-width: 10vw;
 	}
     .lower-cards{
         display: flex;
-        gap: 1rem;
+        gap: 1vw;
         justify-content: space-between;
         width: 100%;
     }
@@ -116,24 +122,14 @@ const weatherData = {
 
   .bus-departures {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); /* Responsive columns */
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(10vw, 1fr)); /* Responsive columns */
+    gap: 1vw;
   }
 
   .weather-section {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 1vw;
   }
-
-
-    @media (min-width: 768px) {
-        .dashboard{
-            grid-template-columns: 1fr 0.0001fr 2fr;
-        }
-        .dashboard-header{
-            grid-column: 1 / -1;
-        }
-    }
 
 </style>
