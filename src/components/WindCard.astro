@@ -5,12 +5,44 @@ interface Props{
 const {weatherData} = Astro.props
 ---
 
+<script is:inline src="https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+
 <div class="wind-card">
     <p style="color: #A7A7A7">Vývoj větru</p>
-    <div class="WindChart">
+    <div class="WindChart" id="Windchart">
     <div>
     <p>{weatherData.windSpeed} km/h</p>
 </div>
+
+<script define:vars={{ WindValues: weatherData.windSpeed}}>
+    (() => {
+        var WindChart = echarts.init(document.getElementById('Windchart'), {
+            renderer: 'svg',
+            useDirtyRect: false
+        });
+
+        var Windconfig = {
+            xAxis: {
+                show: false,
+                type: 'category',
+            },
+            yAxis: {
+                show: false
+            },
+            series: [{
+                data: [20, 50, 30, 40, 60, 80, 120, 150, 110, 90, 60, 70, 50, 40, 30, 20, 40, 10],
+                itemStyle: {
+                    borderRadius: 100,
+                    barCategoryGap: '2',
+                    barMaxWidth: 1
+                },
+                type: 'bar'
+            }]
+        };
+
+        WindChart.setOption(Windconfig);
+    })();
+</script>
 
 <style>
     .wind-card{
@@ -21,7 +53,8 @@ const {weatherData} = Astro.props
         font-size: 1.3vw;
     }
     .WindChart{
-        height: 10vw;
+        height: 250px;
+        width: 300px;
         margin-bottom: 0;
     }
 </style>
