@@ -34,7 +34,7 @@ const weatherData = {
   <main class="dashboard">
 		<div class="first">
     		<h1 style="margin-bottom: 0px;">Západočeská univerzita</h1>
-    		<h2 style="color: #A7A7A7; font-weight: 400; margin-bottom: 5vw; margin-top: 1vw;">{weatherData.location}</h2>
+    		<h2 style="color: #A7A7A7; font-weight: 400; margin-bottom: 5vw;">{weatherData.location}</h2>
 			<div class="main-info">
         <Image src= {sunrain} class="weather-icon" alt="weather icon"></Image>
 				<div class="temp-and-icon">
@@ -47,7 +47,7 @@ const weatherData = {
 		</div>
 		<div class="departure">
         	<h1 style="margin-bottom: 0px;">{weatherData.date}</h1>
-        	<h2 style="color: #A7A7A7; font-weight: 400; margin-bottom: 2.5vw; margin-top: 1vw;">Nejbližší odjezdy ze zastávky <b style="color: white;">Univerzita</h2>
+        	<h2 style="color: #A7A7A7; font-weight: 400; margin-bottom: 2.5vw;">Nejbližší odjezdy ze zastávky <b style="color: white;">Univerzita</h2>
 			<section class="bus-departures">
 				{departures.map((departure) => (
 				  <BusDeparture line_name={departure.line_name} last_stop_name={departure.last_stop_name} leaving_in_min={departure.leaving_in_min} />
@@ -76,6 +76,7 @@ const weatherData = {
   }
   h2 {
     font-size: 1.5vw;
+    margin-top: 0;
   }
   .dashboard {
     display: grid;

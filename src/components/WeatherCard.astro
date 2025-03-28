@@ -10,7 +10,7 @@ const {weatherData} = Astro.props
         <span style="color: #A7A7A7;">Pocitová teplota</span>
         <span>{weatherData.feelsLike}</span>
         <p style="color: #A7A7A7;">Výstrahy</p>
-        <div class="vystrahy"><p>Silné bouřky <br> Očekává se ojedinělý výskyt silných bouřek s úhrny ojediněle nad 40 mm a kroupami. </p></div>
+        <div class="vystrahy"><p><b>Silné bouřky</b><br> Očekává se ojedinělý výskyt silných bouřek s úhrny ojediněle nad 40 mm a kroupami. </p></div>
     </div>
 </div>
 
@@ -29,7 +29,7 @@ const {weatherData} = Astro.props
     .vystrahy{
         background-color: #cd2837;
         padding: 0.3vw 2vw 0.3vw 2vw;
-        border-radius: 1.5vw;
+        border-radius: 1vw;
         font-size: 1vw;
     }
 </style>

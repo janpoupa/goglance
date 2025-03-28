@@ -8,10 +8,9 @@ const {weatherData} = Astro.props
 <script is:inline src="https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 
 <div class="wind-card">
-    <p style="color: #A7A7A7">Vývoj větru</p>
+    <p style="color: #A7A7A7">Vývoj větru - <b style="color:white">{weatherData.windSpeed} km/h</b></p>
     <div class="WindChart" id="Windchart">
     <div>
-    <p>{weatherData.windSpeed} km/h</p>
 </div>
 
 <script define:vars={{ WindValues: weatherData.windSpeed}}>
