@@ -1,5 +1,5 @@
 ---
-// src/pages/index.astro
+// importing astro files, components and images
 import Layout from '../layouts/Layout.astro';
 import BusDeparture from '../components/BusDeparture.astro';
 import WeatherCard from '../components/WeatherCard.astro';
@@ -7,7 +7,7 @@ import WindCard from '../components/WindCard.astro';
 import UvCard from '../components/UvCard.astro';
 import SunTimeCard from '../components/SunTimeCard.astro';
 import {Image} from 'astro:assets';
-import sunrain from '../assets/02d.png';
+import WeatherIcon from '../assets/02d.png';
 
 // Mock Data (Replace with API calls later)
 const departures = [{"line_name":"1","last_stop_name":"Slovany","leaving_in_min":1},{"line_name":"58","last_stop_name":"Nádraží Bílá Hora","leaving_in_min":1},{"line_name":"1","last_stop_name":"Slovany","leaving_in_min":6},{"line_name":"24","last_stop_name":"Bory","leaving_in_min":6},{"line_name":"34","last_stop_name":"Okounová","leaving_in_min":9}];
@@ -30,43 +30,43 @@ const weatherData = {
 
 <Layout title="DoorHub">
   <main class="dashboard">
-		<div class="first">
-    		<h1 style="margin-bottom: 0px;">Západočeská univerzita</h1>
-    		<h2 style="color: #A7A7A7; font-weight: 400; margin-bottom: 5vw;">{weatherData.location}</h2>
-			<div class="main-info">
-        <Image src= {sunrain} class="weather-icon" alt="weather icon"></Image>
-				<div class="temp-and-icon">
-					<span class="temperature">{weatherData.temperature}</span>
-					<span class="condition">{weatherData.condition}</span>
-				</div>
-			</div>
+
+		<div>
+      <h1>Západočeská univerzita</h1>
+      <h2 style="margin-bottom: 5vw;">{weatherData.location}</h2>
+      <Image src= {WeatherIcon} class="weather-icon" alt="weather icon"></Image>
+      <div>
+        <span class="temperature">{weatherData.temperature}</span>
+        <span class="condition">{weatherData.condition}</span>
+      </div>
 		</div>
-		<div class="vl">
-		</div>
-		<div class="departure">
-        	<h1 style="margin-bottom: 0px;">{weatherData.date}</h1>
-          <div class="settings">
-            <a href="/goglance/settings" class="settings-link" aria-label="Settings">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="settings-icon">
-                <title>Settings</title>
-                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-            </a>
-         </div>
-        	<h2 style="color: #A7A7A7; font-weight: 400; margin-bottom: 2.5vw;">Nejbližší odjezdy ze zastávky <b style="color: white;">Univerzita</h2>
+
+		<div class="vl"></div>
+    
+		<div>
+      <h1>{weatherData.date}</h1>
+      <div class="settings">
+        <a href="/goglance/settings" class="settings-link" aria-label="Settings">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" class="settings-icon">
+            <title>Settings</title>
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </a>
+      </div>
+      <h2 style="margin-bottom: 2.5vw;">Nejbližší odjezdy ze zastávky <b style="color: white;">Univerzita</h2>
 			<section class="bus-departures">
-				{departures.map((departure) => (
-				  <BusDeparture line_name={departure.line_name} last_stop_name={departure.last_stop_name} leaving_in_min={departure.leaving_in_min} />
-				))}
+				{departures.map((departure) => (<BusDeparture line_name={departure.line_name} last_stop_name={departure.last_stop_name} leaving_in_min={departure.leaving_in_min}/>))}
 			</section>
 		</div>
-		<div class="third">
+
+		<div>
 			<WeatherCard weatherData={weatherData}/>
 		</div>
-		<div class="fourth">
+
+		<div>
 			<h1 style="margin-bottom: 1vw; margin-top: 0.5vw;">Dnešní předpověď</h1>
-			<section class="weather-section">
+			<section>
 				<div class="lower-cards">
 					<WindCard weatherData={weatherData}/>
 					<UvCard weatherData={weatherData}/>
@@ -74,107 +74,103 @@ const weatherData = {
 				</div>
 			</section>
 		</div>
+
   </main>
 </Layout>
 
 <style>
+  /* General styling */
   h1 {
     font-size: 2vw;
+    margin-bottom: 0px;
   }
   h2 {
     font-size: 1.5vw;
     margin-top: 0;
+    color: #A7A7A7; font-weight: 400;
+    margin-bottom: 0px;
   }
+
+  /* Dashboard styling */
   .dashboard {
     display: grid;
-    grid-template-columns: 1fr 0.001fr 2fr; /* Initially, one column */
+    grid-template-columns: 1fr 0.001fr 2fr;
 	  column-gap: 4vw;
     grid-column-gap: 4vw;
-    row-gap: 0.5vw; /* Spacing between elements */
+    row-gap: 0.5vw;
     grid-row-gap: 0.5vw;
-    width: 92%;        /* Take up most of the viewport width */
-	overflow: hidden;
+    width: 92%;
+	  overflow: hidden;
   }
+
+  /* Main info styling */
+  .weather-icon{
+		max-width: 10vw;
+    height: auto;
+	}
+  .condition{
+    font-size: 1.5vw;
+    margin: 0;
+		color: #A7A7A7;
+		margin-left: 4vw;
+  }
+  .temperature{
+    font-size: 5vw;
+		font-weight: 600;
+		margin: 0;
+  }
+
+  /* Separator styling */
   .vl {
-  border: 0.2vw solid #1b1a1d;
-  border-radius: 5px;;
-  height: 130%;
-  grid-column: 2;
-  grid-row-start: 1;
-  grid-row-end: 3;
-  overflow: hidden;
+    border: 0.2vw solid #1b1a1d;
+    border-radius: 5vw;
+    grid-column: 2;
+    grid-row-start: 1;
+    grid-row-end: 3;
+    overflow: hidden;
   }
-  
-   /* Styles for the settings icon container */
-   .settings {
+
+  /* Styles for the settings icon container */
+  .settings {
     position: absolute;
-    top: 1.5vw; /* Adjust distance from top of .departure */
-    right: 1.5vw; /* Adjust distance from right of .departure */
-    background-color: #1b1a1d; /* Dark gray background */
-    padding: 0.8vw; /* Adjust padding for the icon */
-    border-radius: 1vw; /* Keep the rounded corners */
-    display: flex; /* Center the link/icon */
-    align-items: center;
-    justify-content: center;
-    z-index: 10; /* Ensure it's above other content if needed */
+    top: 1.5vw;
+    right: 1.5vw;
+    background-color: #1b1a1d;
+    padding: 0.8vw;
+    border-radius: 1vw;
   }
   .settings-link {
-     display: block; /* Ensure link fills the container */
-     line-height: 0; /* Prevent extra space around SVG */
-     transition: transform 0.2s ease; /* Optional hover effect */
+     display: block;
+     transition: transform 0.2s ease;
   }
   .settings-link:hover {
-      transform: scale(1.1); /* Example hover effect */
+      transform: scale(1.1);
   }
 
   /* Styles for the SVG icon */
   .settings-icon {
-      width: 1.5vw; /* Icon size - adjust as needed */
-      height: 1.5vw; /* Icon size - adjust as needed */
-      stroke: white; /* Icon color */
-      display: block; /* Helps with alignment */
+      width: 1.5vw;
+      height: 1.5vw;
+      stroke: white;
+      display: block;
   }
-  .temp-and-icon{
-        display: block;
-        align-items: center;
-        gap: 0.5vw;
-    }
-    .condition{
-        font-size: 1.5vw;
-        margin: 0;
-		color: #A7A7A7;
-		margin-left: 4vw;
-    }
-    .temperature{
-        font-size: 5vw;
-		font-weight: 600;
-		margin: 0;
-    }
-	.weather-icon{
-		max-width: 10vw;
-    height: auto;
-	}
-    .lower-cards{
-        display: flex;
-        gap: 1vw;
-        justify-content: space-between;
-        width: 100%;
-    }
-    .dashboard-header{
-        display: flex;
-        flex-direction: column;
-    }
 
+  /* Bus card style */
   .bus-departures {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(10vw, 1fr)); /* Responsive columns */
     gap: 1vw;
   }
 
-  .weather-section {
-      display: flex;
-      flex-direction: column;
-      gap: 1vw;
+  /* Weather details style */
+  .temp-and-icon{
+    display: block;
+    align-items: center;
+    gap: 0.5vw;
   }
-
+  .lower-cards{
+    display: flex;
+    justify-content: space-between;
+  }
+  
 </style>
