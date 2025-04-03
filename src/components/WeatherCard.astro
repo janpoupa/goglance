@@ -4,31 +4,27 @@ interface Props{
 }
 const {weatherData} = Astro.props
 ---
-<hr style="border: 0.15vw solid #1b1a1d; border-radius: 5px;">
+<hr style="border: 0.15vw solid #1b1a1d; border-radius: 5vw;">
 <div class="weather-card">
-    <div class="extra-info">
+    <div>
         <span style="color: #A7A7A7;">Pocitová teplota - </span>
         <span><b>{weatherData.feelsLike}</b></span>
         <p style="color: #A7A7A7;">Výstrahy</p>
-        <div class="vystrahy"><p><b>Silné bouřky</b><br> Očekává se ojedinělý výskyt silných bouřek s úhrny ojediněle nad 40 mm a kroupami. </p></div>
+        <div class="vystrahy"><p><b>Silné bouřky</b><br>Očekává se ojedinělý výskyt silných bouřek s úhrny ojediněle nad 40 mm a kroupami.</p></div>
     </div>
 </div>
 
 <style>
     .weather-card{
         background-color: #1b1a1d;
-        padding: 2vw 2vw 2vw 2vw;
+        padding: 2vw;
         margin-top: 4vw;
         border-radius: 1.5vw;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
         font-size: 1.3vw;
     }
     .vystrahy{
         background-color: #cd2837;
-        padding: 0.3vw 2vw 0.3vw 2vw;
+        padding: 0.3vw 2vw;
         border-radius: 1vw;
         font-size: 1vw;
     }

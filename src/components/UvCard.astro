@@ -10,12 +10,12 @@ const {weatherData} = Astro.props
 <div class="uv-card">
   <div>
     <p style="color: #A7A7A7; margin: auto">UV Index</p>
-    <div class="UVChart" id="UVchart">
+    <div class="chart" id="UVchart">
     </div>
   </div>
   <div>
     <p style="color: #A7A7A7; margin: auto">Vlhkost</p>
-    <div class="humidityChart" id="Humiditychart">
+    <div class="chart" id="Humiditychart">
     </div>
   </div>
 </div>
@@ -32,21 +32,19 @@ const {weatherData} = Astro.props
         series: [
           {
             type: 'gauge',
-            // 5. Use the injected value here
-            data: [{ value: uvIndexValue }], // Use the value passed via define:vars
+            data: [{ value: uvIndexValue }],
             startAngle: 180,
-            endAngle: 360, // Changed to 360 for a full semicircle
+            endAngle: 360,
             center: ["50%", "75%"],
             radius: "120%",
-            min: 0,     // Good practice to set min
+            min: 0,
             max: 12,
             progress: {
               show: true,
               width: 13,
               roundCap: true,
               itemStyle: {
-                borderWidth: 0, // Usually don't need border if color is set
-                //borderColor: '#FCB412', // Removed border color as it might conflict
+                borderWidth: 0,
                 color: '#FCB412',
               }
             },
@@ -54,8 +52,7 @@ const {weatherData} = Astro.props
               roundCap: true,
               lineStyle: {
                 width: 13,
-                // Simplified color definition
-                color: [[1, 'rgba(252, 180, 18, 0.2)']], // Use RGBA for opacity
+                color: [[1, 'rgba(252, 180, 18, 0.2)']],
               }
             },
             pointer: {
@@ -92,13 +89,12 @@ const {weatherData} = Astro.props
         series: [
           {
             type: 'gauge',
-            // 5. Use the injected value here
-            data: [{ value: humidityValue }], // Use the value passed via define:vars
+            data: [{ value: humidityValue }],
             startAngle: 180,
-            endAngle: 360, // Changed to 360 for a full semicircle
+            endAngle: 360,
             center: ["50%", "75%"],
             radius: "120%",
-            min: 0,     // Good practice to set min
+            min: 0,
             max: 100,
             progress: {
               show: true,
@@ -112,8 +108,7 @@ const {weatherData} = Astro.props
               roundCap: true,
               lineStyle: {
                 width: 13,
-                // Simplified color definition
-                color: [[1, 'rgba(36, 163, 255, 0.2)']], // Use RGBA for opacity
+                color: [[1, 'rgba(36, 163, 255, 0.2)']],
               }
             },
             pointer: {
@@ -147,18 +142,14 @@ const {weatherData} = Astro.props
 <style>
     .uv-card{
         background-color: #1b1a1d;
-        padding: 0vw 2vw 0 2vw;
+        padding: 0vw 2vw;
         margin-top: 0vw;
         border-radius: 1.5vw;
         font-size: 1.3vw;
         align-content: space-evenly;
         display: block;
     }
-    .UVChart{
-        width: 144px;
-        height: 84px;
-    }
-    .humidityChart{
+    .chart{
         width: 144px;
         height: 84px;
     }

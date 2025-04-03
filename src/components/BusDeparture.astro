@@ -1,5 +1,5 @@
 ---
-// src/components/BusDeparture.astro
+// importing props
 interface Props {
   line_name: string;
   last_stop_name: string;
@@ -8,7 +8,9 @@ interface Props {
 
 const { line_name, last_stop_name, leaving_in_min } = Astro.props;
 
-function getNmbColor(line_name: string) { // Function now correctly takes a string
+// cards and text colors
+
+function getNmbColor(line_name: string) {
     const num = parseInt(line_name, 10);
 
     if (num >= 1 && num <= 8) {
@@ -17,9 +19,9 @@ function getNmbColor(line_name: string) { // Function now correctly takes a stri
       return 'white';
     }
   }
-  const nmbColor = getNmbColor(line_name);
+const nmbColor = getNmbColor(line_name);
 
-function getLineColor(line_name: string) { // Function now correctly takes a string
+function getLineColor(line_name: string) {
     const num = parseInt(line_name, 10);
 
     if (num >= 1 && num <= 8) {
@@ -32,28 +34,29 @@ function getLineColor(line_name: string) { // Function now correctly takes a str
       return 'gray';
     }
   }
-  const lineColor = getLineColor(line_name);
+const lineColor = getLineColor(line_name);
 ---
 
 <script>
+  // adjusting text size on text lenght
+  
   const elements = document.querySelectorAll(`.destination`);
   elements.forEach(element => {
     const textLength = element.textContent.trim().length;
     let fontSize;
     let lineHeight;
 
-    // Adjust these thresholds and font sizes as needed for your design.
     if (textLength <= 8) {
-      fontSize = '1.25vw'; // Larger size for short text
+      fontSize = '1.25vw';
       lineHeight = '1.25vw';
     } else if (textLength <= 20) {
-      fontSize = '1vw'; // Medium size
+      fontSize = '1vw';
       lineHeight = '1vw';
     } else if (textLength <= 25) {
-      fontSize = '0.9vw'; //Smaller font
+      fontSize = '0.9vw';
       lineHeight = '0.9vw';
     } else {
-      fontSize = '0.8vw'; // Smallest size for very long text
+      fontSize = '0.8vw';
       lineHeight = '0.8vw';
     }
     element.style.fontSize = fontSize;
@@ -75,51 +78,35 @@ function getLineColor(line_name: string) { // Function now correctly takes a str
     background-color: #1b1a1d;
     border-radius: 1vw;
     margin: 0.4vw;
-    display: flex; /* Use flexbox for layout */
-    align-items: space-between; /* Vertically center content */
+    display: flex;
     justify-content: center;
-    font-weight: 600;
   }
-
   .line {
     font-size: 1.5vw;
-    font-weight: bold;
-    background-color: ;
-    border-radius: 0.3vw;
+    border-radius: 0.4vw;
     aspect-ratio: 2 / 1;
     width: 6vw;
     display: flex;
     justify-content: center;
-    align-items: center;
-    color: white;
     clip-path: polygon(0 0, 75% 0, 100% 50%, 75% 100%, 0% 100%);
   }
-
   .nmb{
     line-height: 0;
     transform: translate(-25%, -50%);
   }
-
   .info {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      align-items: space-between;
       margin-top: 3vw;
-      margin-bottom: 2.5vw;
-
+      margin-bottom: 2.6vw;
   }
   .destination{
-      margin-top: 0.5vw;
-      margin-left: 0;
-      margin-right: 0;
-      line-height: 1.25vw;
+      margin: 0.5vw 0 1vw 0;
       max-width: 6vw;
   }
-
   .time {
     font-size: 2vw;
-    color: white;
     margin-bottom: 0;
     margin-top: 0;
   }

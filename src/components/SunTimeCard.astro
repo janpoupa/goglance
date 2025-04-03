@@ -13,24 +13,18 @@ import sunset from '../assets/sunset.png';
     <p style="color: #A7A7A7;">Východ a západ</p>
     <div class="sun-times">
         <Image src= {sunrise} class="sun-icon" alt="sunrise icon"></Image>
-        <p class="sunpositiontext" style="color: #A7A7A7;">Východ</p>
+        <p class="sunpos" style="color: #A7A7A7;">Východ</p>
         <div style="text-align: center; margin: 1vw 0vw 1vw 1vw"><p class="sun-text" style="font-size: 1.8vw">{weatherData.sunriseTime}</p><p class="sun-text" style="font-size: 1vw; color: #A7A7A7;">-1m 50s</p></div>
         <Image src= {sunset} class="sun-icon" alt="sunset icon"></Image>
-        <p class="sunpositiontext" style="color: #A7A7A7;">Západ</p>
+        <p class="sunpos" style="color: #A7A7A7;">Západ</p>
         <div style="text-align: center; margin: 1vw 0vw 1vw 1vw"><p class="sun-text" style="font-size: 1.8vw">{weatherData.sunsetTime}</p><p class="sun-text" style="font-size: 1vw; color: #A7A7A7;">+2m 10s</p></div>
     </div>
 </div>
 
 <style>
-    .sunpositiontext {
-        font-size: 1.5vw;
-    }
-    .sun-text{
-        margin: 0;
-    }
     .sun-time-card{
         background-color: #1b1a1d;
-        padding: 0 2vw 0 2vw;
+        padding: 0 2vw;
         margin-top: 0vw;
         border-radius: 1.5vw;
         font-size: 1.3vw;
@@ -41,10 +35,15 @@ import sunset from '../assets/sunset.png';
         transform: translate(0%, 3%);
         align-items: center;
     }
+    .sunpos {
+        font-size: 1.5vw;
+    }
+    .sun-text{
+        margin: 0;
+    }
     .sun-icon {
         width: 2.5vw;
         height: auto;
         padding: 1vw 1vw 1vw 0;
-
     }
 </style>
