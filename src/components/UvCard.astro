@@ -8,12 +8,16 @@ const {weatherData} = Astro.props
 <script is:inline src="https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 
 <div class="uv-card">
-    <p style="color: #A7A7A7;">UV Index</p>
+  <div>
+    <p style="color: #A7A7A7; margin: auto">UV Index</p>
     <div class="UVChart" id="UVchart">
     </div>
-    <p style="color: #A7A7A7;">Vlhkost</p>
+  </div>
+  <div>
+    <p style="color: #A7A7A7; margin: auto">Vlhkost</p>
     <div class="humidityChart" id="Humiditychart">
     </div>
+  </div>
 </div>
 
 <script define:vars={{ uvIndexValue: weatherData.UVindex, humidityValue: weatherData.humidity }}>
@@ -147,16 +151,14 @@ const {weatherData} = Astro.props
         margin-top: 0vw;
         border-radius: 1.5vw;
         font-size: 1.3vw;
-        align-content: space-around;
+        align-content: space-evenly;
         display: block;
     }
     .UVChart{
-        margin-bottom: 0;
         width: 144px;
         height: 84px;
     }
     .humidityChart{
-        margin-bottom: 0;
         width: 144px;
         height: 84px;
     }

@@ -7,9 +7,7 @@ import WindCard from '../components/WindCard.astro';
 import UvCard from '../components/UvCard.astro';
 import SunTimeCard from '../components/SunTimeCard.astro';
 import {Image} from 'astro:assets';
-import sunrain from '../assets/sun-rain.png';
-import suncloud from '../assets/sun-cloud.png';
-
+import sunrain from '../assets/02d.png';
 
 // Mock Data (Replace with API calls later)
 const departures = [{"line_name":"1","last_stop_name":"Slovany","leaving_in_min":1},{"line_name":"58","last_stop_name":"Nádraží Bílá Hora","leaving_in_min":1},{"line_name":"1","last_stop_name":"Slovany","leaving_in_min":6},{"line_name":"24","last_stop_name":"Bory","leaving_in_min":6},{"line_name":"34","last_stop_name":"Okounová","leaving_in_min":9}];
@@ -20,9 +18,9 @@ const weatherData = {
         condition: 'Mírně zataženo',
         humidity: '84',
         dewPoint: '27°',
-        feelsLike: '42°',
+        feelsLike: '42°C',
         windSpeed: '7.50',
-        windData: '20, 50, 30, 40, 60, 80, 120, 150, 110, 90, 60, 70, 50, 40, 30, 20, 40, 10',
+        windData: [120, 50, 80, 20],
         UVindex: '5',
         sunriseTime: '6:32',
         sunsetTime: '17:42',
@@ -47,6 +45,15 @@ const weatherData = {
 		</div>
 		<div class="departure">
         	<h1 style="margin-bottom: 0px;">{weatherData.date}</h1>
+          <div class="settings">
+            <a href="/goglance/settings" class="settings-link" aria-label="Settings">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="settings-icon">
+                <title>Settings</title>
+                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </a>
+         </div>
         	<h2 style="color: #A7A7A7; font-weight: 400; margin-bottom: 2.5vw;">Nejbližší odjezdy ze zastávky <b style="color: white;">Univerzita</h2>
 			<section class="bus-departures">
 				{departures.map((departure) => (
@@ -96,7 +103,37 @@ const weatherData = {
   grid-row-start: 1;
   grid-row-end: 3;
   overflow: hidden;
-}
+  }
+  
+   /* Styles for the settings icon container */
+   .settings {
+    position: absolute;
+    top: 1.5vw; /* Adjust distance from top of .departure */
+    right: 1.5vw; /* Adjust distance from right of .departure */
+    background-color: #1b1a1d; /* Dark gray background */
+    padding: 0.8vw; /* Adjust padding for the icon */
+    border-radius: 1vw; /* Keep the rounded corners */
+    display: flex; /* Center the link/icon */
+    align-items: center;
+    justify-content: center;
+    z-index: 10; /* Ensure it's above other content if needed */
+  }
+  .settings-link {
+     display: block; /* Ensure link fills the container */
+     line-height: 0; /* Prevent extra space around SVG */
+     transition: transform 0.2s ease; /* Optional hover effect */
+  }
+  .settings-link:hover {
+      transform: scale(1.1); /* Example hover effect */
+  }
+
+  /* Styles for the SVG icon */
+  .settings-icon {
+      width: 1.5vw; /* Icon size - adjust as needed */
+      height: 1.5vw; /* Icon size - adjust as needed */
+      stroke: white; /* Icon color */
+      display: block; /* Helps with alignment */
+  }
   .temp-and-icon{
         display: block;
         align-items: center;
