@@ -8,20 +8,33 @@ import UvCard from '../components/UvCard.astro';
 import SunTimeCard from '../components/SunTimeCard.astro';
 import {Image} from 'astro:assets';
 import WeatherIcon from '../assets/02d.png';
+import { color } from 'chart.js/helpers';
 
 // Mock Data (Replace with API calls later)
 const departures = [{"line_name":"1","last_stop_name":"Slovany","leaving_in_min":1},{"line_name":"58","last_stop_name":"Nádraží Bílá Hora","leaving_in_min":1},{"line_name":"1","last_stop_name":"Slovany","leaving_in_min":6},{"line_name":"24","last_stop_name":"Bory","leaving_in_min":6},{"line_name":"34","last_stop_name":"Okounová","leaving_in_min":9}];
+const generalInfo = {
+  adress: 'Západočeská univerzita',
+  city: 'Plzeň, Česká republika',
+  date: 'Středa 12. 3. 2025',
+  stopName: 'Univerzita',
+}
+const openWeatherData = {
+  condition: 'Mírně zataženo',
+  feelsLike: '42°C',
+  windSpeed: '7.50',
+  windData: [40, 25, 35, 50, 75, 90, 80, 100, 120, 135, 125, 110, 90, 80, 60],
+  UVindex: '7',
+}
+const CHMIdata = {
+  color: 'red',
+  text: 'Silné bouřky',
+  detailed_text: 'Očekává se ojedinělý výskyt silných bouřek s úhrny ojediněle nad 40 mm a kroupami.',
+}
+const senzorData = {
+  temperature: '14°C',
+  humidity: '84',
+}
 const weatherData = {
-        location: 'Plzeň, Česká republika',
-        date: 'Středa 12. 3. 2025',
-        temperature: '14°C',
-        condition: 'Mírně zataženo',
-        humidity: '84',
-        dewPoint: '27°',
-        feelsLike: '42°C',
-        windSpeed: '7.50',
-        windData: [120, 50, 80, 20],
-        UVindex: '5',
         sunriseTime: '6:32',
         sunsetTime: '17:42',
 }
@@ -32,19 +45,19 @@ const weatherData = {
   <main class="dashboard">
 
 		<div>
-      <h1>Západočeská univerzita</h1>
-      <h2 style="margin-bottom: 5vw;">{weatherData.location}</h2>
+      <h1>{generalInfo.adress}</h1>
+      <h2 style="margin-bottom: 5vw;">{generalInfo.city}</h2>
       <Image src= {WeatherIcon} class="weather-icon" alt="weather icon"></Image>
       <div>
-        <span class="temperature">{weatherData.temperature}</span>
-        <span class="condition">{weatherData.condition}</span>
+        <span class="temperature">{senzorData.temperature}</span>
+        <span class="condition">{openWeatherData.condition}</span>
       </div>
 		</div>
 
 		<div class="vl"></div>
     
 		<div>
-      <h1>{weatherData.date}</h1>
+      <h1>{generalInfo.date}</h1>
       <div class="settings">
         <a href="/goglance/settings" class="settings-link" aria-label="Settings">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" class="settings-icon">
@@ -54,22 +67,22 @@ const weatherData = {
           </svg>
         </a>
       </div>
-      <h2 style="margin-bottom: 2.5vw;">Nejbližší odjezdy ze zastávky <b style="color: white;">Univerzita</h2>
+      <h2 style="margin-bottom: 2.5vw;">Nejbližší odjezdy ze zastávky <b style="color: white;">{generalInfo.stopName}</h2>
 			<section class="bus-departures">
 				{departures.map((departure) => (<BusDeparture line_name={departure.line_name} last_stop_name={departure.last_stop_name} leaving_in_min={departure.leaving_in_min}/>))}
 			</section>
 		</div>
 
 		<div>
-			<WeatherCard weatherData={weatherData}/>
+			<WeatherCard openWeatherData={openWeatherData} CHMIdata={CHMIdata}/>
 		</div>
 
 		<div>
 			<h1 style="margin-bottom: 1vw; margin-top: 0.5vw;">Dnešní předpověď</h1>
 			<section>
 				<div class="lower-cards">
-					<WindCard weatherData={weatherData}/>
-					<UvCard weatherData={weatherData}/>
+					<WindCard openWeatherData={openWeatherData}/>
+					<UvCard openWeatherData={openWeatherData} senzorData={senzorData}/>
 					<SunTimeCard weatherData={weatherData}/>
 				</div>
 			</section>
@@ -137,7 +150,7 @@ const weatherData = {
     right: 1.5vw;
     background-color: #1b1a1d;
     padding: 0.8vw;
-    border-radius: 1vw;
+    border-radius: 0.7vw;
   }
   .settings-link {
      display: block;
@@ -171,6 +184,7 @@ const weatherData = {
   .lower-cards{
     display: flex;
     justify-content: space-between;
+    gap: 1vw;
   }
   
 </style>

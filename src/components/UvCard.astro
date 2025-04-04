@@ -1,26 +1,28 @@
 ---
 interface Props{
-    weatherData: any
+    senzorData: any
+    openWeatherData: any
 }
-const {weatherData} = Astro.props
+const {senzorData} = Astro.props
+const {openWeatherData} = Astro.props
 ---
 
 <script is:inline src="https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 
 <div class="uv-card">
   <div>
-    <p style="color: #A7A7A7; margin: auto">UV Index</p>
+    <p style="color: #A7A7A7; margin: 0">UV Index</p>
     <div class="chart" id="UVchart">
     </div>
   </div>
   <div>
-    <p style="color: #A7A7A7; margin: auto">Vlhkost</p>
+    <p style="color: #A7A7A7; margin: 0">Vlhkost</p>
     <div class="chart" id="Humiditychart">
     </div>
   </div>
 </div>
 
-<script define:vars={{ uvIndexValue: weatherData.UVindex, humidityValue: weatherData.humidity }}>
+<script define:vars={{ uvIndexValue: openWeatherData.UVindex, humidityValue: senzorData.humidity }}>
     (() => {
   
       var UVChart = echarts.init(document.getElementById('UVchart'), {
@@ -142,12 +144,12 @@ const {weatherData} = Astro.props
 <style>
     .uv-card{
         background-color: #1b1a1d;
-        padding: 0vw 2vw;
+        padding: 1vw 2vw 2vw 2vw;
         margin-top: 0vw;
         border-radius: 1.5vw;
         font-size: 1.3vw;
-        align-content: space-evenly;
-        display: block;
+        row-gap: 1vw;
+        display: grid;
     }
     .chart{
         width: 144px;
