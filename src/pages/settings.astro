@@ -1,38 +1,370 @@
 ---
 import Layout from '../layouts/Layout.astro';
-
 ---
 
-<Layout title="GoGlance settings">
-    <main class="dashboard">
-        <div class="settings">
-            <a href="/goglance" class="settings-link" aria-label="Settings">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" class="settings-icon">
-                <title>Home</title>
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-              </svg>
-            </a>
-         </div>
-         <Form></Form>
-    </main>
+<Layout title="GoGlance - Nastavení">
+  <div class="home-icon-container">
+    <a href="/goglance" class="home-link" aria-label="Zpět na Dashboard">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" class="home-icon">
+        <title>Home icon</title>
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
+    </a>
+  </div>
+
+  <main class="settings-page-container">
+
+    <div class="form-wrapper">
+      <h1>Nastavení</h1>
+      <form id="settingsForm" class="settings-form">
+
+        <fieldset class="form-fieldset">
+          <legend class="fieldset-legend">API Klíče</legend>
+          <p class="api-key-note">API klíče budou uloženy pouze ve vašem prohlížeči (<code class="code">localStorage</code>).</p>
+
+          <div class="form-group">
+            <label for="mapyApiKeyInput" class="form-label">Mapy.cz API Klíč:</label>
+            <input type="password" id="mapyApiKeyInput" required class="form-input" placeholder="Váš klíč od Mapy.cz API">
+            <small class="input-hint">Potřebný pro vyhledávání polohy.</small>
+          </div>
+
+          <div class="form-group">
+            <label for="owmApiKeyInput" class="form-label">OpenWeatherMap API Klíč:</label>
+            <input type="password" id="owmApiKeyInput" required class="form-input" placeholder="Váš klíč od OpenWeatherMap API">
+            <small class="input-hint">Potřebný pro data o počasí, UV indexu atd.</small>
+          </div>
+
+        </fieldset>
+
+        <fieldset class="form-fieldset">
+          <legend class="fieldset-legend">Nastavení Polohy</legend>
+
+          <div class="form-group">
+            <label for="locationSearchInput" class="form-label">Hledat Místo (pomocí Mapy.cz):</label>
+
+            <div class="search-container">
+              <input type="text" id="locationSearchInput" placeholder="Zadejte adresu, město..." class="form-input search-input">
+              <button type="button" id="searchButton" class="search-button">Hledat</button>
+            </div>
+
+            <div id="searchStatus" class="status-message search-status" aria-live="polite"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="latInput" class="form-label">Zeměpisná šířka (Latitude):</label>
+            <input type="number" id="latInput" step="any" required class="form-input" placeholder="Vyplní se hledáním nebo zadejte ručně">
+          </div>
+
+          <div class="form-group">
+            <label for="lonInput" class="form-label">Zeměpisná délka (Longitude):</label>
+            <input type="number" id="lonInput" step="any" required class="form-input" placeholder="Vyplní se hledáním nebo zadejte ručně">
+          </div>
+
+        </fieldset>
+
+      </form>
+      <button type="button" id="formButton" class="form-button">Uložit Všechna Nastavení</button>
+      <div id="saveStatus" class="status-message save-status" aria-live="polite"></div>
+    </div>
+
+  </main>
 </Layout>
 
+<script>
+  const SETTINGS_KEY = 'goGlanceSettings';
+
+  var placeName;
+  var placeLocation;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // --- Get DOM Elements ---
+
+    // API Keys
+    const mapyApiKeyInput = document.getElementById('mapyApiKeyInput');
+    const owmApiKeyInput = document.getElementById('owmApiKeyInput');
+
+    // Location Search
+    const searchInput = document.getElementById('locationSearchInput');
+    const searchButton = document.getElementById('searchButton');
+    const formButtom = document.getElementById('formButton');
+    const searchStatus = document.getElementById('searchStatus');
+
+    // Location Details
+    const latInput = document.getElementById('latInput');
+    const lonInput = document.getElementById('lonInput');
+
+    // Save Status
+    const saveStatus = document.getElementById('saveStatus');
+
+    // --- Load Settings Function ---
+    function loadSettings() {
+      const storedSettings = localStorage.getItem(SETTINGS_KEY);
+      if (storedSettings) {
+        try {
+          const settings = JSON.parse(storedSettings);
+          console.log('Loading settings:', settings);
+
+          // Populate API Keys
+          if (settings.mapyApiKey) mapyApiKeyInput.value = settings.mapyApiKey;
+          if (settings.owmApiKey) owmApiKeyInput.value = settings.owmApiKey;
+
+          // Populate Location
+          if (settings.lat) latInput.value = settings.lat;
+          if (settings.lon) lonInput.value = settings.lon;
+
+          if (settings.name) placeName = settings.name;
+          if (settings.Location) placeLocation = settings.Location;
+
+        } catch (e) {
+          console.error("Error parsing settings from localStorage", e);
+          saveStatus.textContent = "Chyba při načítání uložených nastavení.";
+          saveStatus.style.color = 'red';
+          localStorage.removeItem(SETTINGS_KEY); // Clear corrupted data
+        }
+      } else {
+        console.log('No settings found in localStorage.');
+      }
+    }
+
+    // --- Save Settings Function ---
+    function saveSettings() {
+       const settingsToSave = {
+        // API Keys
+        mapyApiKey: mapyApiKeyInput.value.trim(),
+        owmApiKey: owmApiKeyInput.value.trim(),
+
+        // Location
+        lat: latInput.value,
+        lon: lonInput.value,
+        name: placeName,
+        location: placeLocation,
+      };
+
+      try {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(settingsToSave));
+        console.log('Saved settings:', settingsToSave);
+        saveStatus.textContent = "Nastavení úspěšně uloženo!";
+        saveStatus.style.color = 'lime';
+        setTimeout(() => { saveStatus.textContent = ''; }, 3000); // Clear after 3s
+      } catch (e) {
+      }
+    }
+
+    // --- Geocode Search Function ---
+    async function handleGeocodeSearch() {
+        const query = searchInput.value.trim();
+        const apiKey = mapyApiKeyInput.value.trim(); // Get key from input
+
+        if (!query) {
+            searchStatus.textContent = "Zadejte místo pro vyhledání.";
+            searchStatus.style.color = 'orange';
+            return;
+        }
+        if (!apiKey) {
+             searchStatus.textContent = "Zadejte prosím váš Mapy.cz API klíč.";
+             searchStatus.style.color = 'orange';
+             return;
+        }
+
+        searchStatus.textContent = "Vyhledávám...";
+        searchStatus.style.color = 'white';
+        searchButton.disabled = true;
+
+        const mapyApiUrl = `https://api.mapy.cz/v1/suggest?lang=cs&apikey=${apiKey}&query=${encodeURIComponent(query)}&limit=1`;
+
+        try {
+
+            const response = await fetch(mapyApiUrl);
+            const data = await response.json();
+
+            if (!response.ok) {
+                 const errorMsg = data?.message || `Mapy.cz API Error: ${response.status}`;
+                 throw new Error(errorMsg);
+            }
+
+            const firstResult = data?.items?.[0];
+            console.log("Mapy.cz Response Item:", firstResult);
+
+            if (firstResult && firstResult.position?.lat && firstResult.position?.lon) {
+
+                latInput.value = firstResult.position.lat.toFixed(6);
+                lonInput.value = firstResult.position.lon.toFixed(6);
+
+                placeName = firstResult.name;
+                placeLocation = firstResult.location;
+
+                // cityInput.value = firstResult.municipality || firstResult.region || ''; // Example: prefer municipality
+                // addressInput.value = firstResult.label || ''; // Use full label as address/place maybe?
+
+                searchStatus.textContent = `Nalezeno: ${firstResult.name}`;
+                searchStatus.style.color = 'lime';
+
+            } else {
+                searchStatus.textContent = "Místo nenalezeno v Mapy.cz.";
+                searchStatus.style.color = 'orange';
+            }
+
+        } catch (error) {
+        } finally {
+             searchButton.disabled = false;
+        }
+    }
+
+
+    // --- Event Listeners ---
+    formButtom.addEventListener('click', saveSettings);
+
+    searchButton.addEventListener('click', handleGeocodeSearch);
+
+    // --- Initial Load ---
+    loadSettings();
+
+  });
+</script>
+
 <style>
-  /* Dashboard styling */
-  .dashboard {
-    display: grid;
-    grid-template-columns: 1fr 0.001fr 2fr;
-	  column-gap: 4vw;
-    grid-column-gap: 4vw;
-    row-gap: 0.5vw;
-    grid-row-gap: 0.5vw;
-    width: 92%;
-	  overflow: hidden;
+  /* Basic styling for settings page */
+
+  h1 {
+    text-align: center;
+    margin: 1vw;
+    font-size: 2vw;
+  }
+  
+   .form-wrapper {
+    background-color: #1b1a1d;
+    padding: 2vw 4vw;
+    margin: 4vw;
+    border-radius: 1vw;
+   }
+
+  .settings-form {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem; /* Space between fieldsets/button */
   }
 
-  /* Styles for the settings icon container */
-  .settings {
+  .form-fieldset {
+    border: 1px solid #4a4a4e;
+    border-radius: 0.5vw;
+    padding: 1.5vw;
+    display: flex;
+    flex-direction: column;
+    gap: 1vw; /* Space between form groups */
+  }
+  .fieldset-legend {
+    font-size: 1.2vw;
+    font-weight: 600;
+    padding: 0 0.5vw;
+    color: white;
+  }
+  .api-key-note {
+    font-size: 0.9vw;
+    color: #A7A7A7;
+    margin-bottom: 0.5vw;
+  }
+  .code {
+    background-color: #3a3a3e;
+    padding: 0.1vw 0.4vw;
+    border-radius: 0.2vw;
+    font-family: monospace;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3vw;
+  }
+
+  .form-label {
+    font-weight: 500;
+    font-size: 0.9vw;
+    color: #ccc;
+  }
+
+  .form-input {
+    padding: 0.7vw 0.9vw;
+    border-radius: 0.3vw;
+    border: 1px solid #4a4a4e;
+    background-color: #3a3a3e;
+    color: white;
+    font-size: 1vw;
+    outline: none;
+    transition: border-color 0.3s ease;
+    width: 100%; /* Make inputs take full width */
+    box-sizing: border-box; /* Include padding/border in width */
+  }
+   /* Style password fields */
+   .form-input[type="password"] {
+       font-family: monospace; /* Optional: Monospace for keys */
+   }
+
+  .form-input:focus {
+    border-color: rgb(30 150 65);
+  }
+  .input-hint {
+      font-size: 0.85vw;
+      color: #888;
+      margin-top: 0.1vw;
+  }
+
+  .form-button {
+    padding: 0.9vw;
+    background-color: rgb(30 150 65);
+    color: white;
+    border: none;
+    border-radius: 0.3vw;
+    font-size: 1.1vw;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 2vw; /* Space above the button */
+    width: 100%; /* Make button full width */
+  }
+
+  .form-button:hover {
+    background-color: rgb(20 130 55);
+  }
+
+  .status-message {
+      margin-top: 0.5vw;
+      text-align: center;
+      font-weight: 500;
+      min-height: 1.5vw;
+      font-size: 0.9vw;
+  }
+  .save-status {
+       margin-top: 1vw; /* More space below button */
+  }
+
+  /* Search Specific Styles */
+  .search-container {
+      display: flex;
+      gap: 0.5vw;
+      align-items: stretch;
+  }
+  .search-input {
+      flex-grow: 1;
+  }
+  .search-button {
+      padding: 0.7vw 1vw;
+      background-color: #4a4a4e;
+      color: white;
+      border: 1px solid #4a4a4e;
+      border-radius: 0.3vw;
+      cursor: pointer;
+      font-size: 1vw;
+      transition: background-color 0.3s ease;
+      white-space: nowrap;
+  }
+  .search-button:hover { background-color: #6a6a6e; }
+  .search-button:disabled { opacity: 0.6; cursor: not-allowed; }
+  .search-status { margin-top: 0.5vw; }
+
+
+  /* Home Icon Styles (using fixed units) */
+  .home-icon-container {
     position: absolute;
     top: 1.5vw;
     right: 1.5vw;
@@ -40,19 +372,8 @@ import Layout from '../layouts/Layout.astro';
     padding: 0.8vw;
     border-radius: 0.7vw;
   }
-  .settings-link {
-     display: block;
-     transition: transform 0.2s ease;
-  }
-  .settings-link:hover {
-      transform: scale(1.1);
-  }
+  .home-link { display: block; transition: transform 0.2s ease; line-height: 0; }
+  .home-link:hover { transform: scale(1.1); }
+  .home-icon { width: 1.5vw; height: 1.5vw; stroke: white; display: block; }
 
-  /* Styles for the SVG icon */
-  .settings-icon {
-      width: 1.5vw;
-      height: 1.5vw;
-      stroke: white;
-      display: block;
-  }
 </style>
