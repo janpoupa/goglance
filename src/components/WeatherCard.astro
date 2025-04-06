@@ -36,7 +36,7 @@ const nmbColor = getTextColor(CHMIdata.color);
     <div class="extra-info">
         <span style="color: #A7A7A7;">Pocitová teplota - </span>
         <span><b>{openWeatherData.feelsLike} </b></span>
-        <p style="color: #A7A7A7; margin: 1vw 0vw 0.5vw;">Výstrahy</p>
+        <p style="color: #A7A7A7; margin: 1vw 0vw">Výstrahy</p>
         <div class="vystrahy" style={`background-color: ${color}; color: ${nmbColor};`}><p><b>{CHMIdata.text}</b><br>{CHMIdata.detailed_text}</p></div>
     </div>
 </div>
@@ -44,7 +44,7 @@ const nmbColor = getTextColor(CHMIdata.color);
 <style>
     .weather-card{
         background-color: #1b1a1d;
-        padding: 1vw 2vw 2vw 2vw;
+        padding: 2vw;
         margin-top: 3.9vw;
         border-radius: 1.5vw;
         display: flex;
@@ -55,8 +55,8 @@ const nmbColor = getTextColor(CHMIdata.color);
     }
     .vystrahy{
         background-color: {`background-color: ${colorname};`};
-        padding: 0.2vw 2vw 0.2vw 2vw;
+        padding: 0.5vw 2vw;
         border-radius: 1vw;
-        font-size: 1vw;
+        font-size: 1.2vw;
     }
 </style>
