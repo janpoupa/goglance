@@ -1,45 +1,43 @@
 ---
-interface Props{
-    openWeatherData: any
-    CHMIdata: any
-}
-const {openWeatherData} = Astro.props
-const {CHMIdata} = Astro.props
-
-function getWarningcolor(colorname: string) {
-    const CHMIcolor = colorname;
-
-    if (CHMIcolor === "red") {
-        return 'rgb(205 40 55)';
-    } else if (CHMIcolor === "yellow") {
-        return 'rgb(240 190 50)';
-    } else {
-        return 'rgb(30 150 65)';
-    }
-  }
-const color = getWarningcolor(CHMIdata.color);
-
-function getTextColor(colorname: string) {
-    const CHMIcolor = colorname;
-
-    if (CHMIcolor === "yellow") {
-      return '#101014';
-    } else {
-      return 'white';
-    }
-  }
-const nmbColor = getTextColor(CHMIdata.color);
 ---
 
 <hr style="border: 0.15vw solid #1b1a1d; border-radius: 5px;">
 <div class="weather-card">
     <div class="extra-info">
-        <span style="color: #A7A7A7;">Pocitová teplota - </span>
-        <span><b>{openWeatherData.feelsLike} </b></span>
-        <p style="color: #A7A7A7; margin: 1vw 0vw">Výstrahy</p>
-        <div class="vystrahy" style={`background-color: ${color}; color: ${nmbColor};`}><p><b>{CHMIdata.text}</b><br>{CHMIdata.detailed_text}</p></div>
+    <span style="color: #A7A7A7;">Pocitová teplota - </span>
+    <span><b id="feels-like-display">42</b>%</span>
+    <p style="color: #A7A7A7; margin: 1vw 0vw">Výstrahy</p>
+    <div id="chmi-alert-container" style="background-color: rgb(205 40 55); color: white;"><b id="chmi-alert-text">Silné bouřky</b><p id="chmi-alert-details">Očekává se ojedinělý výskyt silných bouřek s úhrny ojediněle nad 40 mm a kroupami.</p></div>
     </div>
 </div>
+
+<script>
+    /* Color function
+    function getWarningcolor(colorname: string) {
+        const CHMIcolor = colorname;
+
+        if (CHMIcolor === "red") {
+            return 'rgb(205 40 55)';
+        } else if (CHMIcolor === "yellow") {
+            return 'rgb(240 190 50)';
+        } else {
+            return 'rgb(30 150 65)';
+        }
+    }
+    const color = getWarningcolor(CHMIdata.color);
+
+    function getTextColor(colorname: string) {
+        const CHMIcolor = colorname;
+
+        if (CHMIcolor === "yellow") {
+        return '#101014';
+        } else {
+        return 'white';
+        }
+    }
+    const nmbColor = getTextColor(CHMIdata.color);
+    */
+</script>
 
 <style>
     .weather-card{
@@ -47,16 +45,17 @@ const nmbColor = getTextColor(CHMIdata.color);
         padding: 2vw;
         margin-top: 3.9vw;
         border-radius: 1.5vw;
-        display: flex;
-        flex-direction: row;
         justify-content: space-between;
         align-items: center;
         font-size: 1.3vw;
     }
-    .vystrahy{
-        background-color: {`background-color: ${colorname};`};
-        padding: 0.5vw 2vw;
+    #chmi-alert-container{
+        /* padding: 0.5vw 2vw; */
+        padding: 1vw 2vw 1.3vw 2vw;
         border-radius: 1vw;
         font-size: 1.2vw;
+    }
+    #chmi-alert-details{
+        margin: 0.5vw 0vw 0vw;
     }
 </style>

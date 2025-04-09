@@ -1,19 +1,15 @@
 ---
-interface Props{
-    openWeatherData: any
-}
-const {openWeatherData} = Astro.props
 ---
 
 <script is:inline src="https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 
 <div class="wind-card">
-    <p style="color: #A7A7A7; margin: 0;">Vývoj větru - <b style="color:white">{openWeatherData.windSpeed} km/h</b></p>
-    <div class="WindChart" id="Windchart">
+    <p style="color: #A7A7A7; margin: 0;">Vývoj větru - <b style="color:white" id="wind-speed-display">7.50</b> km/h</p>
+    <div id="Windchart">
     <div>
 </div>
 
-<script define:vars={{ WindValues: openWeatherData.windData}}>
+<script define:vars={{ }}>
     (() => {
         var WindChart = echarts.init(document.getElementById('Windchart'), {
             renderer: 'svg',
@@ -52,7 +48,7 @@ const {openWeatherData} = Astro.props
         border-radius: 1.5vw;
         font-size: 1.3vw;
     }
-    .WindChart{
+    #WindChart{
         height: 18vw;
         width: 18vw;
         margin-bottom: 0;

@@ -2,94 +2,88 @@
 // src/pages/index.astro
 import Layout from '../layouts/Layout.astro';
 import BusDeparture from '../components/BusDeparture.astro'; // Still needed for structure reference, though rendered client-side now
-import WeatherCard from '../components/WeatherCard.astro';
-import WindCard from '../components/WindCard.astro';
-import UvCard from '../components/UvCard.astro';
-import SunTimeCard from '../components/SunTimeCard.astro';
+import WeatherCard from '../components/WeatherCard.astro'; // Structure reference
+import WindCard from '../components/WindCard.astro';     // Structure reference
+import UvCard from '../components/UvCard.astro';       // Structure reference
+import SunTimeCard from '../components/SunTimeCard.astro';   // Structure reference
 
 const settingsKey = 'goGlanceSettings'; // Define localStorage key
 
 ---
 
 <Layout title="GoGlance Hub">
-  <main>
+  <main class="dashboard">
 
     {/* Settings Prompt Error Message */}
-    <div id="settings-prompt" style="display: none; background-color: rgb(205 40 55); color: white; padding: 1rem; border-radius: 8px; text-align: center; margin: 2rem auto; max-width: 600px; grid-column: 1 / -1;">
-      <h2 style="color: white;">Nastavení Chybí</h2>
+    <div id="settings-prompt" style="display: none; background-color: #ffc107; color: #333; padding: 1rem; border-radius: 8px; text-align: center; margin: 2rem auto; max-width: 600px; grid-column: 1 / -1;">
+      <h2>Nastavení Chybí</h2>
       <p>Pro zobrazení dat zadejte prosím vaši polohu a API klíče v nastavení.</p>
-      <a href="/goglance/settings" style="color: gold; text-decoration: underline; font-weight: bold;">Přejít do Nastavení</a>
+      <a href="/goglance/settings" style="color: #007bff; text-decoration: underline; font-weight: bold;">Přejít do Nastavení</a>
     </div>
 
-    {/* Main Content div for hiding */}
-    <div id="main-content-area" class="dashboard">
-      {/* General Info & Current Weather */}
+    {/* General Info & Current Weather */}
+    <div>
+      <h1 id="place-name-display">Načítání...</h1>
+      <h2 id="place-location-display" style="margin-bottom: 5vw;"></h2>
+      <img id="weather-icon-display" src="/icons/01d.png" alt="Počasí" style="height: 10vw; width: 10vw; object-fit: contain;">
       <div>
-        <h1 id="place-name-display">Načítání...</h1>
-        <h2 id="place-location-display" style="margin-bottom: 3vw;"></h2>
-        <img id="weather-icon-display" src="/goglance/icons/01d.png" alt="Počasí" style="height: 10vw; width: 10vw; object-fit: contain;">
-        <div>
-          <span id="temperature-display">50°C</span>
-          <span id="condition-display">Načítání...</span>
+        <span id="temperature-display">--°C</span>
+        <span id="condition-display">Načítání...</span>
+      </div>
+    </div>
+
+    <div class="vl"></div>
+
+    {/* Departures */}
+    <div>
+      <h1 id="current-date-display">Načítání...</h1>
+      {/* Settings Icon Link */}
+      <div class="settings">
+        <a href="/goglance/settings" class="settings-link" aria-label="Settings">
+          <svg class="settings-icon">
+            <title>Settings</title>
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </a>
+      </div>
+      <h2 style="margin-bottom: 2.5vw;">Nejbližší odjezdy ze zastávky <b id="stop-name-display" style="color: white;">Načítání...</b></h2>
+      <section id="departures-list-container">
+          {/* Departures will be loaded here by JS */}
+      </section>
+    </div>
+
+    {/* Weather Details */}
+    <div>
+      <WeatherCard/>
+      {/* Ids for js changes:
+      "feels-like-display" for feels-like temperature text
+      "chmi-alert-container" for changing the bg and text color
+      "chmi-alert-text" for alert text
+      "chmi-alert-details" for alert detail
+      */}
+    </div>
+
+    {/* Forecast */}
+    <div>
+      <h1 style="margin-bottom: 1vw; margin-top: 0.5vw;">Dnešní přehled</h1>
+      <section>
+        <div class="lower-cards">
+          <WindCard/>
+          {/* Ids for js changes:
+          "wind-speed-display" for wind speed
+          "Windchart" id of chart div
+          "WindWalues" js var for chart data
+          */}
+          <UvCard/>
+          {/*
+          "uvIndexValue" and "humidityValue" js vars for chart data 
+          "UVchart" and "Humiditychart" ids of charts
+          */}
+          <SunTimeCard/>
+          {/* "sunrise-display" and "sunset-display" ids of sun times texts */}
         </div>
-      </div>
-
-      <div class="vl"></div>
-
-      {/* Departures */}
-      <div>
-        <h1 id="current-date-display">Načítání...</h1>
-
-        {/* Settings Icon Link */}
-        <div class="settings">
-          <a href="/goglance/settings" class="settings-link" aria-label="Settings">
-            <svg class="settings-icon" stroke-width="2" viewBox="0 0 24 24">
-              <title>Settings</title>
-              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-          </a>
-        </div>
-
-        <h2 style="margin-bottom: 2.5vw;">Nejbližší odjezdy ze zastávky <b id="stop-name-display" style="color: white;">Načítání...</b></h2>
-        
-        <section id="departures-list-container">
-            {/* Departures will be loaded here by JS */}
-        </section>
-      </div>
-
-      {/* Weather Details */}
-      <div>
-        <WeatherCard/>
-        {/* Ids for js changes:
-        "feels-like-display" for feels-like temperature text
-        "chmi-alert-container" for changing the bg and text color
-        "chmi-alert-text" for alert text
-        "chmi-alert-details" for alert detail
-        */}
-      </div>
-
-      {/* Forecast */}
-      <div>
-        <h1 style="margin-bottom: 1vw; margin-top: 0.5vw;">Dnešní přehled</h1>
-        <section>
-          <div class="lower-cards">
-            <WindCard/>
-            {/* Ids for js changes:
-            "wind-speed-display" for wind speed
-            "Windchart" id of chart div
-            "WindWalues" js var for chart data
-            */}
-            <UvCard/>
-            {/*
-            "uvIndexValue" and "humidityValue" js vars for chart data 
-            "UVchart" and "Humiditychart" ids of charts
-            */}
-            <SunTimeCard/>
-            {/* "sunrise-display" and "sunset-display" ids of sun times texts */}
-          </div>
-        </section>
-      </div>
+      </section>
     </div>
   </main>
 </Layout>
@@ -100,7 +94,6 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
 
     // Get references to all elements with IDs added above
     const settingsPrompt = document.getElementById('settings-prompt');
-    const mainContentArea = document.getElementById('main-content-area')
 
     // Static Info Displays
     const placeNameDisplay = document.getElementById('place-name-display');
@@ -143,7 +136,7 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
     function loadSettingsAndInit() {
         console.log('Checking settings...');
         const storedSettings = localStorage.getItem(SETTINGS_KEY);
-        let settings = 1;
+        let settings = null;
 
         if (storedSettings) {
             try {
@@ -167,11 +160,9 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
         currentSettings = settings; // Store globally in script scope
         if(settingsPrompt) settingsPrompt.style.display = 'none'; // Hide prompt
         if(mainContentArea) mainContentArea.style.display = ''; // Ensure dashboard content is visible (remove potential 'none')
-        
 
         // Initial UI updates and data fetch
         updateStaticUI(currentSettings);
-        /*
         fetchAndUpdateWeather(currentSettings);
         fetchAndUpdateDepartures(currentSettings);
         fetchAndUpdateCHMI(currentSettings);
@@ -187,14 +178,12 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
              updateStaticUI(currentSettings); // Update date display too
          }, 60 * 60 * 1000); // 1 hour
 
-        */
-
     }
 
     // --- Update Static UI Function ---
     function updateStaticUI(settings) {
         console.log('Updating static UI...');
-         if (placeNameDisplay) placeNameDisplay.textContent = settings.name || 'Místo';
+         if (placeNameDisplay) placeNameDisplay.textContent = settings.name || 'Místo'; // Use address as main title? Or a fixed title?
          if (placeLocationDisplay) placeLocationDisplay.textContent = settings.location || '';
          if (stopNameDisplay) stopNameDisplay.textContent = settings.stopId || 'N/A';
          if (currentDateDisplay) {
@@ -245,10 +234,6 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
 
 <style>
   /* General styling */
-  main {
-    display: grid;
-    justify-items: center;
-  }
   h1 {
     font-size: 2vw;
     margin-bottom: 0px;

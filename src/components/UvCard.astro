@@ -1,10 +1,4 @@
 ---
-interface Props{
-    senzorData: any
-    openWeatherData: any
-}
-const {senzorData} = Astro.props
-const {openWeatherData} = Astro.props
 ---
 
 <script is:inline src="https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
@@ -22,7 +16,7 @@ const {openWeatherData} = Astro.props
   </div>
 </div>
 
-<script define:vars={{ uvIndexValue: openWeatherData.UVindex, humidityValue: senzorData.humidity }}>
+<script define:vars={{ }}>
     (() => {
   
       var UVChart = echarts.init(document.getElementById('UVchart'), {
