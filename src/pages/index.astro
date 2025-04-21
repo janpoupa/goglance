@@ -2,8 +2,6 @@
 // src/pages/index.astro
 import Layout from '../layouts/Layout.astro';
 import WeatherCard from '../components/WeatherCard.astro';
-import WindCard from '../components/WindCard.astro';
-import UvCard from '../components/UvCard.astro';
 import SunTimeCard from '../components/SunTimeCard.astro';
 
 const settingsKey = 'goGlanceSettings'; // Define localStorage key
@@ -474,9 +472,12 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
 
   async function fetchandUpdateCHMI(settings) {
     console.log('Fetching CHMI warnings');
-    const url = `https://thingproxy.freeboard.io/fetch/https://lovecka.info/ChmiWarnings1/chmi/vystrahy/3209?kratke=1`;
     try {
-      const response = await fetch(url);
+
+      const response = await fetch('/api/CHMI.json', { // Call your own endpoint
+        method: "GET",
+        headers: { 'Content-Type': 'application/json' },
+      });
 
       if (!response.ok) throw new Error(`CHMI Error: ${response.status}`);
       const data = await response.json();
@@ -514,36 +515,16 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
       departuresListContainer.innerHTML = '<p class="error-msg">Chyba: Chybí nastavení Lat/Lon pro vyhledání odjezdů.</p>';
       return;
     }
-    const apiUrl = `https://thingproxy.freeboard.io/fetch/https://jizdnirady.pmdp.cz/odjezdy/vyhledat`;
-    const requestBody = {
-      "Stop": {
-        "StopId":null,
-        "Latitude":parseFloat(settings.lat),
-        "Longitude":parseFloat(settings.lon)
-      },
-      "DateAndTime":null,
-      "MaxResults":5,
-      "FullResults":false
-    };
-    
-    const headers = {
-      'Content-Type': 'application/json'
-    }
 
     departuresListContainer.innerHTML = '<p class="loading-msg">Načítání odjezdů...</p>'; // Show loading state
 
     try {
-      const response = await fetch(apiUrl, {
+      const clientRequestBody = { lat: parseFloat(settings.lat), lon: parseFloat(settings.lon) };
+      const response = await fetch('/api/departures.json', { // Call your own endpoint
         method: "POST",
-        headers: headers,
-        body: JSON.stringify(requestBody)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(clientRequestBody)
       });
-
-      console.log(`API Response Status: ${response.status} ${response.statusText}`);
-
-      if (!response.ok) {
-        console.warn("Could not parse error response body.");
-      }
 
       const apiData = await response.json();
       if (Array.isArray(apiData)) {
