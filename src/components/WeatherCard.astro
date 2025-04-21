@@ -5,39 +5,11 @@
 <div class="weather-card">
     <div class="extra-info">
     <span style="color: #A7A7A7;">Pocitová teplota - </span>
-    <span><b id="feels-like-display">42</b>%</span>
+    <span><b id="feels-like-display">--</b> °C</span>
     <p style="color: #A7A7A7; margin: 1vw 0vw">Výstrahy</p>
-    <div id="chmi-alert-container" style="background-color: rgb(205 40 55); color: white;"><b id="chmi-alert-text">Silné bouřky</b><p id="chmi-alert-details">Očekává se ojedinělý výskyt silných bouřek s úhrny ojediněle nad 40 mm a kroupami.</p></div>
+    <div id="chmi-alert-container" style="background-color: rgb(30 150 65); color: white;"><b id="chmi-alert-text">Název Výstrahy</b><p id="chmi-alert-details">Zde se bude nacházet popis výstrahy.</p></div>
     </div>
 </div>
-
-<script>
-    /* Color function
-    function getWarningcolor(colorname: string) {
-        const CHMIcolor = colorname;
-
-        if (CHMIcolor === "red") {
-            return 'rgb(205 40 55)';
-        } else if (CHMIcolor === "yellow") {
-            return 'rgb(240 190 50)';
-        } else {
-            return 'rgb(30 150 65)';
-        }
-    }
-    const color = getWarningcolor(CHMIdata.color);
-
-    function getTextColor(colorname: string) {
-        const CHMIcolor = colorname;
-
-        if (CHMIcolor === "yellow") {
-        return '#101014';
-        } else {
-        return 'white';
-        }
-    }
-    const nmbColor = getTextColor(CHMIdata.color);
-    */
-</script>
 
 <style>
     .weather-card{
@@ -48,10 +20,10 @@
         justify-content: space-between;
         align-items: center;
         font-size: 1.3vw;
-    }
+        width: 85%;
+        }
     #chmi-alert-container{
-        /* padding: 0.5vw 2vw; */
-        padding: 1vw 2vw 1.3vw 2vw;
+        padding: 1.3vw 2vw 1.3vw 2vw;
         border-radius: 1vw;
         font-size: 1.2vw;
     }

@@ -34,6 +34,12 @@ import Layout from '../layouts/Layout.astro';
             <input type="password" id="owmApiKeyInput" required class="form-input" placeholder="Váš klíč od OpenWeatherMap API">
             <small class="input-hint">Potřebný pro data o počasí, UV indexu atd.</small>
           </div>
+          
+          <div class="form-group">
+            <label for="senzorIPInput" class="form-label">IP adresa senzoru:</label>
+            <input type="text" id="senzorIPInput" required class="form-input" placeholder="Vaše URL senzoru">
+            <small class="input-hint">Potřebný pro data ze senzoru.</small>
+          </div>
 
         </fieldset>
 
@@ -84,6 +90,9 @@ import Layout from '../layouts/Layout.astro';
     const mapyApiKeyInput = document.getElementById('mapyApiKeyInput');
     const owmApiKeyInput = document.getElementById('owmApiKeyInput');
 
+    //Senzor IP adress
+    const senzorIPInput = document.getElementById('senzorIPInput');
+
     // Location Search
     const searchInput = document.getElementById('locationSearchInput');
     const searchButton = document.getElementById('searchButton');
@@ -108,6 +117,8 @@ import Layout from '../layouts/Layout.astro';
           // Populate API Keys
           if (settings.mapyApiKey) mapyApiKeyInput.value = settings.mapyApiKey;
           if (settings.owmApiKey) owmApiKeyInput.value = settings.owmApiKey;
+
+          if (settings.senzorIP) senzorIPInput.value = settings.senzorIP;
 
           // Populate Location
           if (settings.lat) latInput.value = settings.lat;
@@ -135,6 +146,8 @@ import Layout from '../layouts/Layout.astro';
         // API Keys
         mapyApiKey: mapyApiKeyInput.value.trim(),
         owmApiKey: owmApiKeyInput.value.trim(),
+
+        senzorIP: senzorIPInput.value,
 
         // Location
         lat: latInput.value,

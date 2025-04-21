@@ -1,7 +1,6 @@
 ---
 // src/pages/index.astro
 import Layout from '../layouts/Layout.astro';
-import BusDeparture from '../components/BusDeparture.astro'; // Still needed for structure reference, though rendered client-side now
 import WeatherCard from '../components/WeatherCard.astro';
 import WindCard from '../components/WindCard.astro';
 import UvCard from '../components/UvCard.astro';
@@ -13,7 +12,6 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
 
 <Layout title="GoGlance Hub">
   <main>
-
     {/* Settings Prompt Error Message */}
     <div id="settings-prompt" style="display: none; background-color: rgb(205 40 55); color: white; padding: 1rem; border-radius: 8px; text-align: center; margin: 2rem auto; max-width: 600px; grid-column: 1 / -1;">
       <h2 style="color: white;">Nastavení Chybí</h2>
@@ -27,18 +25,20 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
       <div>
         <h1 id="place-name-display">Načítání...</h1>
         <h2 id="place-location-display" style="margin-bottom: 3vw;"></h2>
-        <img id="weather-icon-display" src="/goglance/icons/01d.png" alt="Počasí" style="height: 10vw; width: 10vw; object-fit: contain;">
-        <div>
-          <span id="temperature-display">50°C</span>
+        <img id="weather-icon-display" src="/goglance/icons/unknown.png" alt="Počasí" style="height: 10vw; width: 10vw; object-fit: contain;">
+        <div style="display: inline-block; width: 100%;">
+          <span id="temperature-display"><b>--</b>°C</span>
           <span id="condition-display">Načítání...</span>
         </div>
       </div>
 
       <div class="vl"></div>
 
-      {/* Departures */}
+      {/* Departures Section */}
       <div>
         <h1 id="current-date-display">Načítání...</h1>
+
+        {/* TODO -- time */}
 
         {/* Settings Icon Link */}
         <div class="settings">
@@ -53,8 +53,8 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
 
         <h2 style="margin-bottom: 2.5vw;">Nejbližší odjezdy ze zastávky <b id="stop-name-display" style="color: white;">Načítání...</b></h2>
         
-        <section id="departures-list-container">
-            {/* Departures will be loaded here by JS */}
+        <section id="departures-list-container" class="bus-departures">
+            {/* Departures are here by JS */}
         </section>
       </div>
 
@@ -74,17 +74,26 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
         <h1 style="margin-bottom: 1vw; margin-top: 0.5vw;">Dnešní přehled</h1>
         <section>
           <div class="lower-cards">
-            <WindCard/>
-            {/* Ids for js changes:
-            "wind-speed-display" for wind speed
-            "Windchart" id of chart div
-            "WindWalues" js var for chart data
-            */}
-            <UvCard/>
-            {/*
-            "uvIndexValue" and "humidityValue" js vars for chart data 
-            "UVchart" and "Humiditychart" ids of charts
-            */}
+
+            <div class="wind-card">
+              <p style="color: #A7A7A7; margin: 0;">Vývoj větru - <b style="color:white" id="wind-speed-display">-.--</b> km/h</p>
+              <div id="Windchart">
+              </div>
+            </div>
+
+            <div class="uv-card">
+              <div>
+                <p style="color: #A7A7A7; margin: 0">UV Index</p>
+                <div class="chart" id="UVchart">
+                </div>
+              </div>
+              <div>
+                <p style="color: #A7A7A7; margin: 0">Vlhkost</p>
+                <div class="chart" id="Humiditychart">
+                </div>
+              </div>
+            </div>
+
             <SunTimeCard/>
             {/* "sunrise-display" and "sunset-display" ids of sun times texts */}
           </div>
@@ -94,152 +103,491 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
   </main>
 </Layout>
 
+<script is:inline src="https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+
 <script define:vars={{ settingsKey }}>
-    const SETTINGS_KEY = settingsKey;
-    let currentSettings = null;
 
-    // Get references to all elements with IDs added above
-    const settingsPrompt = document.getElementById('settings-prompt');
-    const mainContentArea = document.getElementById('main-content-area')
+  const SETTINGS_KEY = settingsKey;
+  let currentSettings = null;
 
-    // Static Info Displays
-    const placeNameDisplay = document.getElementById('place-name-display');
-    const placeLocationDisplay = document.getElementById('place-location-display');
-    const currentDateDisplay = document.getElementById('current-date-display');
-    const stopNameDisplay = document.getElementById('stop-name-display');
+  // Get references to all elements with IDs added above
+  const settingsPrompt = document.getElementById('settings-prompt');
+  const mainContentArea = document.getElementById('main-content-area')
 
-    // Dynamic Weather Displays
-    const weatherIconDisplay = document.getElementById('weather-icon-display');
-    const temperatureDisplay = document.getElementById('temperature-display');
-    const conditionDisplay = document.getElementById('condition-display');
-    const feelsLikeDisplay = document.getElementById('feels-like-display');
-    const windSpeedDisplay = document.getElementById('wind-speed-display');
-    const sunriseDisplay = document.getElementById('sunrise-display');
-    const sunsetDisplay = document.getElementById('sunset-display');
+  // Static Info Displays
+  const placeNameDisplay = document.getElementById('place-name-display');
+  const placeLocationDisplay = document.getElementById('place-location-display');
+  const currentDateDisplay = document.getElementById('current-date-display');
+  const stopNameDisplay = document.getElementById('stop-name-display');
 
-     // CHMI Alert Displays
-    const chmiAlertContainer = document.getElementById('chmi-alert-container');
-    const chmiAlertText = document.getElementById('chmi-alert-text');
-    const chmiAlertDetails = document.getElementById('chmi-alert-details');
+  // Dynamic Weather Displays
+  const weatherIconDisplay = document.getElementById('weather-icon-display');
+  const temperatureDisplay = document.getElementById('temperature-display');
+  const conditionDisplay = document.getElementById('condition-display');
+  const feelsLikeDisplay = document.getElementById('feels-like-display');
+  const windSpeedDisplay = document.getElementById('wind-speed-display');
+  const sunriseDisplay = document.getElementById('sunrise-display');
+  const sunsetDisplay = document.getElementById('sunset-display');
 
-    // Departures List
-    const departuresListContainer = document.getElementById('departures-list-container');
+    // CHMI Alert Displays
+  const chmiAlertContainer = document.getElementById('chmi-alert-container');
+  const chmiAlertText = document.getElementById('chmi-alert-text');
+  const chmiAlertDetails = document.getElementById('chmi-alert-details');
 
-    // --- Icon Map (Client Side) ---
-     const iconMap = {
-        '01d': '/icons/01d.png',
-        '02d': '/icons/02d.png',
-        '03d': '/icons/03d.png',
-        '04d': '/icons/04d.png',
-        '09d': '/icons/09d.png',
-        '10d': '/icons/10d.png',
-        '11d': '/icons/11d.png',
-        '13d': '/icons/13d.png',
-        '50d': '/icons/50d.png',
-        'unknown': '/icons/unknown.png',
-    };
+  // Departures List
+  const departuresListContainer = document.getElementById('departures-list-container');
 
-    // --- Load Settings & Initialize Function ---
-    function loadSettingsAndInit() {
-        console.log('Checking settings...');
-        const storedSettings = localStorage.getItem(SETTINGS_KEY);
-        let settings = 1;
+  // --- Load Departure Card ---
+  function createDepartureCardHTML(departure) {
+    let bgColor = '#1b1a1d';
+    const num = parseInt(departure.line_name, 10);
+    if (!isNaN(num)) {
+      if (num >= 1 && num <= 8) bgColor = 'rgb(240 190 50)';
+      else if (num >= 9 && num <= 19) bgColor = 'rgb(30 150 65)';
+      else if (num >= 20) bgColor = 'rgb(205 40 55)';
+    }
+    const cardHTML = `
+    <div class="bus-card">
+      <div class="info">
+        <div style="align-self: center">
+          <span id="line" style="background-color: ${bgColor};">
+            <p style="color: white" id="nmb"> ${departure.line_name} </p>
+          </span>
+          <p id="destination">${departure.last_stop_name}</p>
+        </div>
+        <p id="time">${departure.leaving_in_min} min</p>
+      </div>
+    </div>
+    `;
+    return cardHTML;
+  }
 
-        if (storedSettings) {
-            try {
-                settings = JSON.parse(storedSettings);
-            } catch (e) {
-                console.error("Error parsing settings from localStorage", e);
-                settings = null; // Treat as missing if parsing fails
+  // --- Adjusting Last Stop Name Font Size ---
+  function adjustDestinationFontSize(containerElement) {
+    const destinationElements = containerElement.querySelectorAll('#destination');
+    destinationElements.forEach(element => {
+      const textLength = element.textContent.trim().length;
+      let fontSize = '0.8vw'; // Default smallest
+      let lineHeight = '0.8vw';
+
+      if (textLength <= 8) { fontSize = '1.25vw'; lineHeight = '1.25vw'; }
+      else if (textLength <= 18) { fontSize = '1.0vw'; lineHeight = '1vw'; }
+      else if (textLength <= 25) { fontSize = '0.9vw'; lineHeight = '0.9vw'; }
+
+      element.style.fontSize = fontSize;
+      element.style.lineHeight = lineHeight;
+    });
+  }
+
+  // --- Load Settings & Initialize Function ---
+  function loadSettingsAndInit() {
+    console.log('Checking settings...');
+    const storedSettings = localStorage.getItem(SETTINGS_KEY);
+    let settings = 1;
+
+    if (storedSettings) {
+      try {
+        settings = JSON.parse(storedSettings);
+      } catch (e) {
+        console.error("Error parsing settings from localStorage", e);
+        settings = null; // Treat as missing if parsing fails
+      }
+    }
+
+    // Validate essential settings
+    if (!settings.lat || !settings.lon || !settings.owmApiKey || !settings.mapyApiKey) {
+      console.warn('Essential settings missing from localStorage.');
+      if(mainContentArea) mainContentArea.style.display = 'none'; // Hide dashboard content
+      if(settingsPrompt) settingsPrompt.style.display = 'block'; // Show prompt
+      return; // Stop initialization
+    }
+
+    // Settings are valid
+    console.log('Settings loaded:', settings);
+    currentSettings = settings; // Store globally in script scope
+    if(settingsPrompt) settingsPrompt.style.display = 'none'; // Hide prompt
+    if(mainContentArea) mainContentArea.style.display = ''; // Ensure dashboard content is visible (remove potential 'none')
+
+    // Initial UI updates and data fetch
+    updateStaticUI(currentSettings);
+    fetchAndUpdateDepartures(currentSettings);
+    fetchAndUpdateWeather(currentSettings);
+    fetchandUpdateCHMI(currentSettings);
+    fetchAndUpdateSensor(currentSettings);
+
+    /*
+
+    // Set up refresh intervals
+      setInterval(() => fetchAndUpdateDepartures(currentSettings), 60 * 1000); // 1 min
+      // setInterval(() => fetchAndUpdateSensor(currentSettings), 60 * 1000); // 1 min
+      setInterval(() => {
+          console.log('Performing hourly update...');
+          fetchAndUpdateWeather(currentSettings);
+          fetchAndUpdateCHMI(currentSettings);
+          updateStaticUI(currentSettings); // Update date display too
+      }, 60 * 60 * 1000); // 1 hour
+
+    */
+  }
+
+  // --- Update Static UI Function ---
+
+  function updateStaticUI(settings) {
+    console.log('Updating static UI...');
+    if (placeNameDisplay) placeNameDisplay.textContent = settings.name || 'Místo';
+    if (placeLocationDisplay) placeLocationDisplay.textContent = settings.location || '';
+    if (stopNameDisplay) stopNameDisplay.textContent = settings.stopId || 'N/A';
+    if (currentDateDisplay) {
+      currentDateDisplay.textContent = new Date().toLocaleDateString('cs-CZ', { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' });
+    }
+  }
+
+  let humidityChartInstance = null;
+
+  async function fetchAndUpdateSensor(settings) {
+    console.log('Fetching sensor on', settings.senzorIP);
+
+    const hurl = `${settings.senzorIP}humidity`
+    const turl = `${settings.senzorIP}temperature`
+
+    try {
+      const tresponse = await fetch(turl);
+      if (!tresponse.ok) throw new Error(`OWM Error: ${tresponse.status}`);
+      const tdata = await tresponse.json();
+      temperatureDisplay.textContent = tdata + ` °C`;
+
+      const hresponse = await fetch(hurl);
+      if (!hresponse.ok) throw new Error(`OWM Error: ${hresponse.status}`);
+      const hdata = await hresponse.json();
+
+      var humidityChartDisplay = document.getElementById('Humiditychart');
+
+      if (humidityChartDisplay) {
+        if (!humidityChartInstance) {
+          humidityChartInstance = echarts.init(humidityChartDisplay, {
+            renderer: 'svg', // or 'canvas'
+            useDirtyRect: false
+          });
+
+          // Optional: Add a resize listener to make the chart responsive
+          window.addEventListener('resize', function() {
+            if (humidityChartInstance) {
+              humidityChartInstance.resize();
             }
+          });
         }
 
-        // Validate essential settings
-        if (!settings.lat || !settings.lon || !settings.owmApiKey || !settings.mapyApiKey) {
-             console.warn('Essential settings missing from localStorage.');
-             if(mainContentArea) mainContentArea.style.display = 'none'; // Hide dashboard content
-             if(settingsPrompt) settingsPrompt.style.display = 'block'; // Show prompt
-             return; // Stop initialization
+        var Humidityconfig = {
+          series: [{
+            type: 'gauge',
+            data: [{ value: hdata }],
+            startAngle: 180,
+            endAngle: 360,
+            center: ["50%", "75%"],
+            radius: "120%",
+            min: 0,
+            max: 100,
+            progress: {
+              show: true,
+              width: 13,
+              roundCap: true,
+              itemStyle: {
+                color: '#2195f2',
+              },
+            },
+            axisLine: {
+              roundCap: true,
+              lineStyle: {
+                width: 13,
+                color: [[1, 'rgba(36, 163, 255, 0.2)']],
+              }
+            },
+            pointer: {
+              show: false,
+            },
+            axisTick: {
+              show: false
+            },
+            splitLine: {
+              show: false,
+            },
+            axisLabel: {
+              show: false,
+            },
+            detail: {
+              valueAnimation: true,
+              fontSize: 17,
+              color: '#A7A7A7',
+              offsetCenter: [0, '-10%']
+            },
+            data: [{value: hdata}]
+          }]
+        };
+
+        humidityChartInstance.setOption(Humidityconfig);
+      } else {
+        console.warn("Element with ID 'Humiditychart' not found. Cannot render chart.");
+      }
+
+    } catch (error) {
+      console.error('Failed to fetch senzor data:', error);
+    }
+  }
+
+  let windChartInstance = null;
+  let UVIChartInstance = null;
+
+  async function fetchAndUpdateWeather(settings) {
+    console.log('Fetching weather for:', settings.lat, settings.lon);
+    const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${settings.lat}&lon=${settings.lon}&exclude=minutely&units=metric&lang=cz&appid=${settings.owmApiKey}`;
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`OWM Error: ${response.status}`);
+      const data = await response.json();
+      feelsLikeDisplay.textContent = data.current.feels_like;
+      windSpeedDisplay.textContent = data.current.wind_speed;
+      sunriseDisplay.textContent = new Date(data.daily[0].sunrise*1000).toLocaleTimeString('cs-cz', {timeStyle : 'short'});
+      sunsetDisplay.textContent = new Date(data.daily[0].sunset*1000).toLocaleTimeString('cs-cz', {timeStyle : 'short'});
+      weatherIconDisplay.src = `/goglance/icons/${data.current.weather[0].icon}.png`;
+      conditionDisplay.textContent = data.current.weather[0].description;
+
+      var WindChartDisplay = document.getElementById('Windchart');
+
+      if (WindChartDisplay) {
+
+        if (!windChartInstance) {
+          windChartInstance = echarts.init(WindChartDisplay, {
+            renderer: 'svg', // or 'canvas'
+            useDirtyRect: false
+          });
+
+          // Optional: Add a resize listener to make the chart responsive
+          window.addEventListener('resize', function() {
+            if (windChartInstance) {
+              windChartInstance.resize();
+            }
+          });
         }
 
-        // Settings are valid!
-        console.log('Settings loaded:', settings);
-        currentSettings = settings; // Store globally in script scope
-        if(settingsPrompt) settingsPrompt.style.display = 'none'; // Hide prompt
-        if(mainContentArea) mainContentArea.style.display = ''; // Ensure dashboard content is visible (remove potential 'none')
-        
+        var windConfig = {
+          xAxis: {
+            show: false,
+            type: 'category',
+          },
+          yAxis: {
+              show: false
+          },
+          series: [{
+            itemStyle: {
+              borderRadius: 100,
+              barCategoryGap: '2',
+              color: '#00ba33',
+              barMaxWidth: 1
+            },
+            type: 'bar',
+            data: data.hourly.slice(0, 24).map(item => item.wind_speed)
+          }]
+        };
 
-        // Initial UI updates and data fetch
-        updateStaticUI(currentSettings);
-        /*
-        fetchAndUpdateWeather(currentSettings);
-        fetchAndUpdateDepartures(currentSettings);
-        fetchAndUpdateCHMI(currentSettings);
-        // fetchAndUpdateSensor(currentSettings); // If needed
+        windChartInstance.setOption(windConfig);
 
-        // Set up refresh intervals
-         setInterval(() => fetchAndUpdateDepartures(currentSettings), 60 * 1000); // 1 min
-         // setInterval(() => fetchAndUpdateSensor(currentSettings), 60 * 1000); // 1 min
-         setInterval(() => {
-             console.log('Performing hourly update...');
-             fetchAndUpdateWeather(currentSettings);
-             fetchAndUpdateCHMI(currentSettings);
-             updateStaticUI(currentSettings); // Update date display too
-         }, 60 * 60 * 1000); // 1 hour
+      } else {
+        console.warn("Element with ID 'Windchart' not found. Cannot render chart.");
+      }
 
-        */
+      var UVIChartDisplay = document.getElementById('UVchart');
 
-    }
+      if (UVIChartDisplay) {
+        if (!UVIChartInstance) {
+          UVIChartInstance = echarts.init(UVIChartDisplay, {
+            renderer: 'svg', // or 'canvas'
+            useDirtyRect: false
+          });
 
-    // --- Update Static UI Function ---
-    function updateStaticUI(settings) {
-        console.log('Updating static UI...');
-         if (placeNameDisplay) placeNameDisplay.textContent = settings.name || 'Místo';
-         if (placeLocationDisplay) placeLocationDisplay.textContent = settings.location || '';
-         if (stopNameDisplay) stopNameDisplay.textContent = settings.stopId || 'N/A';
-         if (currentDateDisplay) {
-             currentDateDisplay.textContent = new Date().toLocaleDateString('cs-CZ', { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' });
-         }
-    }
-
-    // --- Placeholder Fetching Functions (To be implemented next) ---
-    async function fetchAndUpdateWeather(settings) {
-        console.log('Fetching weather for:', settings.lat, settings.lon);
-        // TODO: Implement OpenWeatherMap API call and DOM updates
-        // Example structure:
-        /*
-        const apiKey = settings.owmApiKey;
-        const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${settings.lat}...&appid=${apiKey}...`;
-        try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error(`OWM Error: ${response.status}`);
-            const data = await response.json();
-            // Update DOM elements (temperatureDisplay.textContent = ..., etc.)
-             console.log('Weather Data:', data);
-        } catch (error) {
-            console.error('Failed to fetch weather:', error);
-            // Update UI to show error state
+          // Optional: Add a resize listener to make the chart responsive
+          window.addEventListener('resize', function() {
+            if (UVIChartInstance) {
+              UVIChartInstance.resize();
+            }
+          });
         }
-        */
-         // TEMPORARY: Update some fields to show it's called
-         if(temperatureDisplay) temperatureDisplay.textContent = '??°C';
-         if(conditionDisplay) conditionDisplay.textContent = 'Načítání...';
+
+        var UVIchartconfig = {
+          series: [
+            {
+              type: 'gauge',
+              data: [{ value: data.current.uvi }],
+              startAngle: 180,
+              endAngle: 360,
+              center: ["50%", "75%"],
+              radius: "120%",
+              min: 0,
+              max: 12,
+              progress: {
+                show: true,
+                width: 13,
+                roundCap: true,
+                itemStyle: {
+                  color: '#FCB412',
+                },
+              },
+              axisLine: {
+                roundCap: true,
+                lineStyle: {
+                  width: 13,
+                  color: [[1, 'rgba(252, 180, 18, 0.2)']],
+                }
+              },
+              pointer: {
+                show: false,
+              },
+              axisTick: {
+                show: false
+              },
+              splitLine: {
+                show: false,
+              },
+              axisLabel: {
+                show: false,
+              },
+              detail: {
+                valueAnimation: true,
+                fontSize: 17,
+                color: '#A7A7A7',
+                offsetCenter: [0, '-10%']
+              },
+              data: [{value: data.current.uvi}]
+            }
+          ]
+        };
+
+        UVIChartInstance.setOption(UVIchartconfig);
+
+      } else {
+        console.warn("Element with ID 'UVchart' not found. Cannot render chart.");
+      }
+      
+    } catch (error) {
+      console.error('Failed to fetch weather:', error);
+    }
+  }
+
+  async function fetchandUpdateCHMI(settings) {
+    console.log('Fetching CHMI warnings');
+    const url = `https://thingproxy.freeboard.io/fetch/https://lovecka.info/ChmiWarnings1/chmi/vystrahy/3209?kratke=1`;
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) throw new Error(`CHMI Error: ${response.status}`);
+      const data = await response.json();
+
+      if (data.events == "") {
+        chmiAlertContainer.style.backgroundColor = 'rgb(30 150 65)';
+        chmiAlertText.textContent = "Žádné výstrahy";
+        chmiAlertDetails.textContent = "Pro oblast " + settings.name + " se nenachází žádné výstrahy";
+      } else {
+
+        chmiAlertText.textContent = data.events.text;
+        chmiAlertDetails.textContent = data.events.detailed_text;
+        if (data.events.color == "red") {
+          chmiAlertContainer.style.backgroundColor = 'rgb(205 40 55)';
+        } else if (data.events.color == "yellow") {
+          chmiAlertContainer.style.backgroundColor = 'rgb(240 190 50)';
+        } else{
+          chmiAlertContainer.style.backgroundColor = 'rgb(30 150 65)';
+        }
+      }
+      console.log('Weather Data:', data);
+
+    } catch (error) {
+      console.error('Failed to fetch weather:', error);
+    }
+  }
+
+  async function fetchAndUpdateDepartures(settings) {
+    console.log('Fetching departures for location near:', settings.name || `${settings.lat},${settings.lon}`);
+    if (!departuresListContainer) {
+      console.error("Fatal Error: Departures container element not found!"); return;
+    }
+    if (!settings || !settings.lat || !settings.lon) {
+      console.error("Error: Required settings (Latitude, Longitude) missing for departures fetch.", settings);
+      departuresListContainer.innerHTML = '<p class="error-msg">Chyba: Chybí nastavení Lat/Lon pro vyhledání odjezdů.</p>';
+      return;
+    }
+    const apiUrl = `https://thingproxy.freeboard.io/fetch/https://jizdnirady.pmdp.cz/odjezdy/vyhledat`;
+    const requestBody = {
+      "Stop": {
+        "StopId":null,
+        "Latitude":parseFloat(settings.lat),
+        "Longitude":parseFloat(settings.lon)
+      },
+      "DateAndTime":null,
+      "MaxResults":5,
+      "FullResults":false
+    };
+    
+    const headers = {
+      'Content-Type': 'application/json'
     }
 
-    async function fetchAndUpdateDepartures(settings) {
-        console.log('Fetching departures for stop:', settings.stopId);
-        // TODO: Implement Departures API call and dynamic list generation
-         if(departuresListContainer) departuresListContainer.innerHTML = '<p style="color: #aaa; font-size: 0.9em;">Načítání odjezdů...</p>';
-    }
+    departuresListContainer.innerHTML = '<p class="loading-msg">Načítání odjezdů...</p>'; // Show loading state
 
-    async function fetchAndUpdateCHMI(settings) {
-        console.log('Fetching CHMI alerts');
-        // TODO: Implement CHMI API call and alert display logic
-         if(chmiAlertContainer) chmiAlertContainer.style.display = 'none'; // Hide initially
-    }
+    try {
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(requestBody)
+      });
 
-    // --- Run Initialization on Load ---
-    document.addEventListener('DOMContentLoaded', loadSettingsAndInit);
+      console.log(`API Response Status: ${response.status} ${response.statusText}`);
+
+      if (!response.ok) {
+        console.warn("Could not parse error response body.");
+      }
+
+      const apiData = await response.json();
+      if (Array.isArray(apiData)) {
+        departuresListContainer.innerHTML = '';
+        if (apiData.length === 0) {
+          departuresListContainer.innerHTML = '<p class="info-msg">V okolí nebyly nalezeny žádné odjezdy.</p>';
+        } else {
+          let generatedHTML = '';
+          apiData.forEach(item => {
+
+            const lineName = item.Line.Name;
+            const lastStopName = item.LastStopName;
+            const leavingInMin = item.LeavingInMin;
+
+            // Validate extracted fields
+            if (lineName !== undefined && typeof lineName === 'string' &&
+              lastStopName !== undefined && typeof lastStopName === 'string' &&
+              leavingInMin !== undefined) {
+
+              const departure = {
+                line_name: lineName,
+                last_stop_name: lastStopName,
+                leaving_in_min: leavingInMin
+              };
+              generatedHTML += createDepartureCardHTML(departure);
+
+            } else {
+              console.warn("Skipping departure item due to missing/invalid fields:", item);
+            }
+          });
+          departuresListContainer.innerHTML = generatedHTML; // Set HTML once
+
+          // Adjust font sizes AFTER all cards are in the DOM
+          adjustDestinationFontSize(departuresListContainer);
+          console.log(`Successfully rendered ${apiData.length} departures.`);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch or process departures:', error);
+    }
+  }
+
+  // --- Run Initialization on Load ---
+  document.addEventListener('DOMContentLoaded', loadSettingsAndInit);
 
 </script>
 
@@ -279,9 +627,9 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
 	}
   #condition-display{
     font-size: 1.5vw;
-    margin: 0;
 		color: #A7A7A7;
-		margin-left: 4vw;
+    display:inline-block;
+    text-align:right;
   }
   #temperature-display{
     font-size: 5vw;
@@ -336,5 +684,106 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
     justify-content: space-between;
     gap: 1vw;
   }
-  
+    .bus-card {
+    background-color: #1b1a1d;
+    border-radius: 1vw;
+    margin: 0.4vw;
+    display: flex;
+    justify-content: center;
+    font-weight: 600;
+  }
+  #line {
+    font-size: 1.5vw;
+    border-radius: 0.4vw;
+    aspect-ratio: 2 / 1;
+    width: 6vw;
+    display: flex;
+    justify-content: center;
+    clip-path: polygon(0 0, 75% 0, 100% 50%, 75% 100%, 0% 100%);
+  }
+  #nmb{
+    line-height: 0;
+    transform: translate(-25%, -50%);
+  }
+  .info {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin-top: 3vw;
+      margin-bottom: 2.6vw;
+  }
+  #destination{
+      margin: 0.5vw 0 1vw 0;
+      max-width: 6vw;
+  }
+  #time {
+    font-size: 2vw;
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+  .wind-card{
+    background-color: #1b1a1d;
+    padding: 2vw 2vw 0vw;
+    margin-top: 0vw;
+    border-radius: 1.5vw;
+    font-size: 1.3vw;
+  }
+  #Windchart{
+    height: 18vw;
+    width: 18vw;
+    margin-bottom: 0;
+  }
+  .uv-card{
+        background-color: #1b1a1d;
+        padding: 2vw;
+        margin-top: 0vw;
+        border-radius: 1.5vw;
+        font-size: 1.3vw;
+        row-gap: 1vw;
+        display: grid;
+    }
+    .chart{
+        width: 8vw;
+        height: 6vw;
+    }
 </style>
+
+ <style is:global>
+  .bus-card {
+    background-color: #1b1a1d;
+    border-radius: 1vw;
+    margin: 0.4vw;
+    display: flex;
+    justify-content: center;
+    font-weight: 600;
+  }
+  #line {
+    font-size: 1.5vw;
+    border-radius: 0.4vw;
+    aspect-ratio: 2 / 1;
+    width: 6vw;
+    display: flex;
+    justify-content: center;
+    clip-path: polygon(0 0, 75% 0, 100% 50%, 75% 100%, 0% 100%);
+  }
+  #nmb{
+    line-height: 0;
+    transform: translate(-25%, -50%);
+  }
+  .info {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin-top: 3vw;
+      margin-bottom: 2.6vw;
+  }
+  #destination{
+      margin: 0.5vw 0 1vw 0;
+      max-width: 6vw;
+  }
+  #time {
+    font-size: 2vw;
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+ </style>
