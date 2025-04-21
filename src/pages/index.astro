@@ -40,7 +40,7 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
 
         {/* Settings Icon Link */}
         <div class="settings">
-          <a href="/goglance/settings" class="settings-link" aria-label="Settings">
+          <a href="/settings" class="settings-link" aria-label="Settings">
             <svg class="settings-icon" stroke-width="2" viewBox="0 0 24 24">
               <title>Settings</title>
               <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
@@ -346,7 +346,7 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
       windSpeedDisplay.textContent = data.current.wind_speed;
       sunriseDisplay.textContent = new Date(data.daily[0].sunrise*1000).toLocaleTimeString('cs-cz', {timeStyle : 'short'});
       sunsetDisplay.textContent = new Date(data.daily[0].sunset*1000).toLocaleTimeString('cs-cz', {timeStyle : 'short'});
-      weatherIconDisplay.src = `/goglance/icons/${data.current.weather[0].icon}.png`;
+      weatherIconDisplay.src = `/icons/${data.current.weather[0].icon}.png`;
       conditionDisplay.textContent = data.current.weather[0].description;
 
       var WindChartDisplay = document.getElementById('Windchart');
