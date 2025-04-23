@@ -14,7 +14,7 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
     <div id="settings-prompt" style="display: none; background-color: rgb(205 40 55); color: white; padding: 1rem; border-radius: 8px; text-align: center; margin: 2rem auto; max-width: 600px; grid-column: 1 / -1;">
       <h2 style="color: white;">Nastavení Chybí</h2>
       <p>Pro zobrazení dat zadejte prosím vaši polohu a API klíče v nastavení.</p>
-      <a href="/goglance/settings" style="color: gold; text-decoration: underline; font-weight: bold;">Přejít do Nastavení</a>
+      <a href="/settings" style="color: gold; text-decoration: underline; font-weight: bold;">Přejít do Nastavení</a>
     </div>
 
     {/* Main Content div for hiding */}
@@ -23,7 +23,7 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
       <div>
         <h1 id="place-name-display">Načítání...</h1>
         <h2 id="place-location-display" style="margin-bottom: 3vw;"></h2>
-        <img id="weather-icon-display" src="/goglance/icons/unknown.png" alt="Počasí" style="height: 10vw; width: 10vw; object-fit: contain;">
+        <img id="weather-icon-display" src="/icons/unknown.png" alt="Počasí" style="height: 10vw; width: 10vw; object-fit: contain;">
         <div style="display: inline-block; width: 100%;">
           <span id="temperature-display"><b>--</b>°C</span>
           <span id="condition-display">Načítání...</span>
@@ -234,7 +234,7 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
     console.log('Updating static UI...');
     if (placeNameDisplay) placeNameDisplay.textContent = settings.name || 'Místo';
     if (placeLocationDisplay) placeLocationDisplay.textContent = settings.location || '';
-    if (stopNameDisplay) stopNameDisplay.textContent = settings.stopId || 'N/A';
+    if (stopNameDisplay) stopNameDisplay.textContent = settings.name || 'N/A';
     if (currentDateDisplay) {
       currentDateDisplay.textContent = new Date().toLocaleDateString('cs-CZ', { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' });
     }
