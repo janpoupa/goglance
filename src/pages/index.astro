@@ -218,20 +218,17 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
     fetchAndUpdateSensor(currentSettings);
     currentTimeDisplay.textContent = new Date().toLocaleTimeString("cs-CZ", {timeStyle:'short'});
 
-    /*
 
     // Set up refresh intervals
       setInterval(() => fetchAndUpdateDepartures(currentSettings), 60 * 1000); // 1 min
       setInterval(() => fetchAndUpdateSensor(currentSettings), 60 * 1000); // 1 min
-      setInterval(() => currentTimeDisplay.textContent = new Date().toLocaleTimeString("cs-CZ"), 60 * 1000); // 1 min
+      setInterval(() => currentTimeDisplay.textContent = new Date().toLocaleTimeString("cs-CZ", {timeStyle:'short'}), 60 * 1000); // 1 min
       setInterval(() => {
           console.log('Performing hourly update...');
           fetchAndUpdateWeather(currentSettings);
           fetchAndUpdateCHMI(currentSettings);
           updateStaticUI(currentSettings); // Update date display too
       }, 60 * 60 * 1000); // 1 hour
-
-    */
   }
 
   // --- Update Static UI Function ---
@@ -460,7 +457,7 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
                 color: '#A7A7A7',
                 offsetCenter: [0, '-10%']
               },
-              data: [{value: data.current.uvi}]
+              data: [{value: Math.round(data.current.uvi)}]
             }
           ]
         };
