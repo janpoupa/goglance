@@ -34,7 +34,10 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
 
       {/* Departures Section */}
       <div>
-        <h1 id="current-date-display">Načítání...</h1>
+        <div style="justify-content: space-between; display:flex">
+        <h1 style="display: inline-block;" id="current-date-display">Načítání...</h1>
+        <h1 style="display: inline-block;" id="current-time-display">--:--</h1>
+        </div>
 
         {/* TODO -- time */}
 
@@ -117,6 +120,7 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
   const placeLocationDisplay = document.getElementById('place-location-display');
   const currentDateDisplay = document.getElementById('current-date-display');
   const stopNameDisplay = document.getElementById('stop-name-display');
+  const currentTimeDisplay = document.getElementById('current-time-display');
 
   // Dynamic Weather Displays
   const weatherIconDisplay = document.getElementById('weather-icon-display');
@@ -212,12 +216,14 @@ const settingsKey = 'goGlanceSettings'; // Define localStorage key
     fetchAndUpdateWeather(currentSettings);
     fetchandUpdateCHMI(currentSettings);
     fetchAndUpdateSensor(currentSettings);
+    currentTimeDisplay.textContent = new Date().toLocaleTimeString("cs-CZ", {timeStyle:'short'});
 
     /*
 
     // Set up refresh intervals
       setInterval(() => fetchAndUpdateDepartures(currentSettings), 60 * 1000); // 1 min
-      // setInterval(() => fetchAndUpdateSensor(currentSettings), 60 * 1000); // 1 min
+      setInterval(() => fetchAndUpdateSensor(currentSettings), 60 * 1000); // 1 min
+      setInterval(() => currentTimeDisplay.textContent = new Date().toLocaleTimeString("cs-CZ"), 60 * 1000); // 1 min
       setInterval(() => {
           console.log('Performing hourly update...');
           fetchAndUpdateWeather(currentSettings);
